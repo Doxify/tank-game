@@ -1,7 +1,7 @@
 # csc413-tankgame
 
-## Student Name  :
-## Student ID    :
+## Student Name  : Andrei Georgescu
+## Student ID    : 920776919
 
 
 ## src folder is to be used for source code only.
