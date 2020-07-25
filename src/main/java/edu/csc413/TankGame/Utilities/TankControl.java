@@ -29,7 +29,7 @@ public class TankControl implements KeyListener {
      */
     @Override
     public void keyTyped(KeyEvent event) {
-        System.out.println(this.tank + " KEY: " + event.getKeyCode());
+//        System.out.println(this.tank + " KEY: " + event.getKeyCode());
     }
 
     @Override
@@ -50,6 +50,10 @@ public class TankControl implements KeyListener {
         if(keyPressed == left) {
             this.tank.toggleLeftPress();
         }
+
+        if(keyPressed == shoot) {
+            this.tank.toggleShootPress();
+        }
     }
 
     @Override
@@ -69,6 +73,10 @@ public class TankControl implements KeyListener {
 
         if(keyPressed == left) {
             this.tank.unToggleLeftPress();
+        }
+
+        if(keyPressed == shoot) {
+            this.tank.unToggleShootPress();
         }
     }
 

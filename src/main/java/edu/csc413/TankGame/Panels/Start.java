@@ -1,6 +1,8 @@
 package main.java.edu.csc413.TankGame.Panels;
 
 import main.java.edu.csc413.TankGame.Launcher;
+import main.java.edu.csc413.TankGame.Utilities.GameConstants;
+import main.java.edu.csc413.TankGame.Utilities.Resources;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,7 +25,8 @@ public class Start extends JPanel {
         this.setLayout(null);
 
         // Loading Background
-        loadBackgroundImage();
+//        loadBackgroundImage();
+        this.background = Resources.titleImage;
 
         // Configuring Buttons
         configureButtons();
@@ -42,24 +45,23 @@ public class Start extends JPanel {
     private void configureButtons() {
         // Start Button
         this.start = new JButton("Start");
-        this.start.setFont(new Font("Courier New", Font.BOLD, 24));
-        this.start.setBounds(150, 300, 150, 50);
+        this.start.setFont(new Font("Helvetica", Font.BOLD, 24));
+        this.start.setBounds(200, GameConstants.START_MENU_SCREEN_HEIGHT / 2, 150, 50);
         this.start.addActionListener((actionEvent -> {
             this.launcher.setPanel("game");
         }));
 
         // Exit Button
         this.exit = new JButton("Exit");
-        this.exit.setSize(new Dimension(200, 100));
         this.exit.setFont(new Font("Courier New", Font.BOLD, 24));
-        this.exit.setBounds(150, 400, 150, 50);
+        this.exit.setBounds(GameConstants.START_MENU_SCREEN_WIDTH / 2, GameConstants.START_MENU_SCREEN_HEIGHT / 2, 150, 50);
         this.exit.addActionListener((actionEvent -> {
             this.launcher.setPanel("exit");
         }));
 
         // Adding buttons to the Panel
         this.add(start);
-        this.add(exit);
+//        this.add(exit);
     }
 
     @Override
