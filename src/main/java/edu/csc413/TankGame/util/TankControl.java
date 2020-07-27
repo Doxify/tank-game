@@ -1,6 +1,6 @@
-package main.java.edu.csc413.TankGame.Utilities;
+package main.java.edu.csc413.TankGame.util;
 
-import main.java.edu.csc413.TankGame.GameObject.Movable.Tank;
+import main.java.edu.csc413.TankGame.entity.movable.Tank;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

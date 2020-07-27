@@ -1,50 +1,48 @@
 package main.java.edu.csc413.TankGame;
 
-import main.java.edu.csc413.TankGame.Panels.End;
-import main.java.edu.csc413.TankGame.Panels.Start;
-import main.java.edu.csc413.TankGame.Panels.World;
-import main.java.edu.csc413.TankGame.Utilities.GameConstants;
+import main.java.edu.csc413.TankGame.menu.End;
+import main.java.edu.csc413.TankGame.menu.Start;
+import main.java.edu.csc413.TankGame.util.GameConstants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
 
 public class Launcher {
-
-    // Panels
-    private JPanel mainPanel;
-    private JPanel startPanel;
-    private JPanel endPanel;
-    private JPanel worldPanel;
-
-    // Game Class
-    private Game game;
 
     // Frame and Card Layout
     private JFrame jFrame;
     private CardLayout cardLayout;
 
+    // Panels
+    private JPanel mainPanel;
+    private JPanel startPanel;
+    private JPanel endPanel;
+
+    private Game game;
+
     public Launcher() {
         this.jFrame = new JFrame();
+        this.jFrame.setResizable(false);
         this.jFrame.setTitle("Tank Wars | Andrei Georgescu");
         this.jFrame.setLocationRelativeTo(null);
         this.jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void initUserInterface() {
-        // Instantiating Panels
+        // Instantiating panels
         this.mainPanel = new JPanel();
         this.startPanel = new Start(this);
         this.endPanel = new End(this);
-        this.worldPanel = new World(this);
         this.cardLayout = new CardLayout();
 
-        // Configuring Panels
-        this.jFrame.setResizable(false);
+        // Instantiating game
+        this.game = new Game(this);
+
+        // Adding panels into Frame
         this.mainPanel.setLayout(this.cardLayout);
         this.mainPanel.add(this.startPanel, "start");
         this.mainPanel.add(this.endPanel, "end");
-        this.mainPanel.add(this.worldPanel, "game");
+        this.mainPanel.add(this.game.getScreen(), "game");
         this.jFrame.add(mainPanel);
 
         // Setting the current panel to start panel.
@@ -56,7 +54,7 @@ public class Launcher {
      * Possible types are "start", "end", and "game".
      */
     public void setPanel(String type) {
-        // Hiding the jFrame while changing it.
+        // Hiding the jFrame while making changes.
         this.jFrame.setVisible(false);
 
         // Setting the current panel.
@@ -72,8 +70,6 @@ public class Launcher {
             }
             case "game": {
                 this.jFrame.setSize(GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT + 30);
-                this.game = new Game(this, worldPanel);
-                this.game.initializeGame();
                 this.game.start();
                 break;
             }
@@ -89,17 +85,6 @@ public class Launcher {
      */
     public JFrame getJFrame() {
         return this.jFrame;
-    }
-
-    public Game getGame() {
-        return this.game;
-    }
-
-    /**
-     * Closes the game
-     */
-    public void closeGame() {
-        this.jFrame.dispatchEvent(new WindowEvent(this.jFrame, WindowEvent.WINDOW_CLOSING));
     }
 
     /**

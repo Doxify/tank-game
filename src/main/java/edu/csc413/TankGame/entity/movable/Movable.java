@@ -1,22 +1,21 @@
-package main.java.edu.csc413.TankGame.GameObject.Movable;
+package main.java.edu.csc413.TankGame.entity.movable;
 
-import main.java.edu.csc413.TankGame.GameObject.GameObject;
-import main.java.edu.csc413.TankGame.Utilities.GameConstants;
+import main.java.edu.csc413.TankGame.entity.Entity;
+import main.java.edu.csc413.TankGame.util.GameConstants;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-public abstract class Movable extends GameObject {
+public abstract class Movable extends Entity {
 
     private int ROTATION_SPEED;
     private int SPEED;
-
     private int vX;
     private int vY;
     private float angle;
 
-    public Movable(int x, int y, int vX, int vY, int angle, BufferedImage image) {
+    public Movable(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, image);
         this.vX = vX;
         this.vY = vY;
@@ -43,7 +42,7 @@ public abstract class Movable extends GameObject {
         return this.angle;
     }
 
-    public void setAngle(int angle) {
+    public void setAngle(float angle) {
         this.angle = angle;
     }
 
@@ -56,36 +55,38 @@ public abstract class Movable extends GameObject {
     }
 
     /**
-     * Moves the Movable object backward.
+     * Moves the Movable object backward at the rate of SPEED and
+     * at the angle of ANGLE.
      */
     void moveBackward() {
-        this.vX = (int) Math.round(this.SPEED * Math.cos(Math.toRadians(angle)));
-        this.vY = (int) Math.round(this.SPEED * Math.sin(Math.toRadians(angle)));
+        this.setVelocityX((int) Math.round(this.SPEED * Math.cos(Math.toRadians(this.getAngle()))));
+        this.setVelocityY((int) Math.round(this.SPEED * Math.sin(Math.toRadians(this.getAngle()))));
         this.setX(this.getX() - this.getVelocityX());
         this.setY(this.getY() - this.getVelocityY());
-        checkBorder();
+        this.checkBorder();
     }
 
     /**
-     * Moves the Movable object forward.
+     * Moves the Movable object forward at the rate of SPEED and
+     * at the angle of ANGLE.
      */
     void moveForward() {
         this.setVelocityX((int) Math.round(this.SPEED * Math.cos(Math.toRadians(this.getAngle()))));
         this.setVelocityY((int) Math.round(this.SPEED * Math.sin(Math.toRadians(this.getAngle()))));
         this.setX(this.getX() + this.getVelocityX());
         this.setY(this.getY() + this.getVelocityY());
-        checkBorder();
+        this.checkBorder();
     }
 
     /**
-     * Rotates the movable to the left at a rate of ROTATION_SPEED.
+     * Rotates the Movable to the left at a rate of ROTATION_SPEED.
      */
     void rotateLeft() {
         this.angle -= ROTATION_SPEED;
     }
 
     /**
-     * Rotates the movable to the right at a rate of ROTATION_SPEED.
+     * Rotates the Movable to the right at a rate of ROTATION_SPEED.
      */
     void rotateRight() {
         this.angle += ROTATION_SPEED;
@@ -104,8 +105,8 @@ public abstract class Movable extends GameObject {
             this.setX(GameConstants.WORLD_WIDTH - 88);
         }
 
-        if (this.getY() < 40) {
-            this.setY(40);
+        if (this.getY() < 30) {
+            this.setY(30);
         }
 
         if (this.getY() >= GameConstants.WORLD_HEIGHT - 80) {
@@ -119,20 +120,16 @@ public abstract class Movable extends GameObject {
     public abstract void update();
 
     /**
-     * Draws a Movable.
-     * @param graphics
+     * Draws a Movable to the buffer.
+     * @param graphics the buffer
      */
     @Override
-    public void drawImage(Graphics graphics) {
+    public void render(Graphics graphics) {
         Graphics2D g2 = (Graphics2D) graphics;
         AffineTransform rotation = AffineTransform.getTranslateInstance(getX(), getY());
 
         rotation.rotate(Math.toRadians(angle), getImage().getWidth() / 2.0, getImage().getHeight() / 2.0);
         g2.drawImage(getImage(), rotation, null);
-
-        // Debug stuff
-        g2.setColor(Color.BLUE);
-        g2.drawRect(getX(), getY(), getImage().getWidth(), getImage().getHeight());
     };
 
 }

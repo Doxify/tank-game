@@ -1,6 +1,6 @@
-package main.java.edu.csc413.TankGame.GameObject.Stationary.Wall;
+package main.java.edu.csc413.TankGame.entity.stationary.wall;
 
-import main.java.edu.csc413.TankGame.GameObject.Stationary.Stationary;
+import main.java.edu.csc413.TankGame.entity.stationary.Stationary;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +15,9 @@ public abstract class Wall extends Stationary {
      * Check for if a Wall is breakable.
      * @return Whether or not the wall is breakable.
      */
-    public abstract boolean isBreakable();
+    public boolean isBreakable() {
+        return false;
+    };
 
     /**
      * Returns the current state of a Wall.
@@ -23,14 +25,16 @@ public abstract class Wall extends Stationary {
      *         3 = MAX Health
      *         0 = LOWEST Health, Broken.
      */
-    public abstract int getState();
+    public int getState() {
+        return 3;
+    };
 
     /**
      * Draws a Wall to the bufffer.
      * @param graphics buffer
      */
     @Override
-    public void drawImage(Graphics graphics) {
+    public void render(Graphics graphics) {
         Graphics2D g2 = (Graphics2D) graphics;
         g2.drawImage(getImage(), getX(), getY(), null);
     }

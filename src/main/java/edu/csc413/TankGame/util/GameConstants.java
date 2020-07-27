@@ -1,6 +1,9 @@
-package main.java.edu.csc413.TankGame.Utilities;
+package main.java.edu.csc413.TankGame.util;
 
 public class GameConstants {
+
+    public static final int GAME_WIDTH = 1920;
+    public static final int GAME_HEIGHT = 1080;
 
     public static final int WORLD_WIDTH = 2010;
     public static final int WORLD_HEIGHT = 2010;
