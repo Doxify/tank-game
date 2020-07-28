@@ -69,21 +69,25 @@ public abstract class Entity {
         return this.hitbox.getBounds();
     }
 
-    public boolean hasCollided(Rectangle hitbox) {
-        if(this.hitbox != hitbox) {
-            return this.hitbox.intersects(hitbox);
+    /**
+     * Checks if an Entity has collided with another Entity.
+     * @param entity to check against
+     * @return whether or not it collided
+     */
+    public boolean hasCollided(Entity entity) {
+        // Make sure we're not comparing the same entity
+        if(this != entity) {
+            return this.hitbox.intersects(entity.getHitbox());
         }
         return false;
     }
 
     public void render(Graphics graphics) {
         if(this.image != null) {
-            Graphics2D g2 = (Graphics2D) graphics;
-            g2.drawImage(image, x, y, null);
-
-            // Visualizing hitboxes.
-            g2.setColor(Color.BLUE);
-            g2.drawRect(getX(), getY(), getImage().getWidth(), getImage().getHeight());
+            if(!this.removed) {
+                Graphics2D g2 = (Graphics2D) graphics;
+                g2.drawImage(image, x, y, null);
+            }
         }
     }
 }

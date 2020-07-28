@@ -1,13 +1,15 @@
 package main.java.edu.csc413.TankGame.level;
 
 import main.java.edu.csc413.TankGame.entity.Entity;
+import main.java.edu.csc413.TankGame.entity.movable.Bullet;
 import main.java.edu.csc413.TankGame.entity.movable.Movable;
 import main.java.edu.csc413.TankGame.entity.movable.Tank;
 import main.java.edu.csc413.TankGame.entity.stationary.Stationary;
 import main.java.edu.csc413.TankGame.entity.stationary.wall.Breakable;
 import main.java.edu.csc413.TankGame.entity.stationary.wall.Unbreakable;
-import main.java.edu.csc413.TankGame.util.GameConstants;
+import main.java.edu.csc413.TankGame.entity.stationary.wall.Wall;
 import main.java.edu.csc413.TankGame.graphics.Assets;
+import main.java.edu.csc413.TankGame.util.GameConstants;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -22,7 +24,8 @@ public class Level {
     private int width = GameConstants.WORLD_WIDTH;
     private int height = GameConstants.WORLD_HEIGHT;
 
-    private final List<Movable> movables = new ArrayList<>();
+//    private final List<Movable> movables = new ArrayList<>();
+    private final List<Bullet> bullets = new ArrayList<>();
     private final List<Stationary> stationaries = new ArrayList<>();
     private final List<Tank> tanks = new ArrayList<>();
 
@@ -95,7 +98,7 @@ public class Level {
      * Handles the clean up of entities from the Level.
      */
     private void remove() {
-        movables.forEach(movable -> { if(movable.isRemoved()) movable.remove(); });
+        bullets.forEach(movable -> { if(movable.isRemoved()) movable.remove(); });
         stationaries.forEach(stationary -> { if(stationary.isRemoved()) stationary.remove(); });
         tanks.forEach(tank -> { if(tank.isRemoved()) tank.remove(); });
     }
@@ -104,10 +107,9 @@ public class Level {
      * Calls on entities to update their state.
      */
     public void update() {
-//        stationaries.forEach(Stationary::update);
-        movables.forEach(Movable::update);
+        bullets.forEach(Movable::update);
         tanks.forEach(Tank::update);
-        remove();
+//        remove();
     }
 
     /**
@@ -115,7 +117,7 @@ public class Level {
      * @param buffer to render to
      */
     public void render(Graphics buffer) {
-        movables.forEach(movable -> movable.render(buffer));
+        bullets.forEach(movable -> movable.render(buffer));
         stationaries.forEach(stationary -> stationary.render(buffer));
         tanks.forEach(tank -> tank.render(buffer));
     }
@@ -128,8 +130,10 @@ public class Level {
         entity.init(this);
         if (entity instanceof Tank) {
             tanks.add((Tank) entity);
-        } else if(entity instanceof Movable) {
-            movables.add((Movable) entity);
+//        } else if(entity instanceof Movable) {
+//            movables.add((Movable) entity);
+        } else if(entity instanceof Bullet) {
+            bullets.add((Bullet) entity);
         } else if(entity instanceof Stationary) {
             stationaries.add((Stationary) entity);
         }
@@ -142,20 +146,48 @@ public class Level {
     public void removeEntity(Entity entity) {
         if (entity instanceof Tank) {
             tanks.remove(entity);
-        } else if(entity instanceof Movable) {
-            movables.remove(entity);
+        } else if(entity instanceof Bullet) {
+            bullets.remove(entity);
         } else if(entity instanceof Stationary) {
             stationaries.remove(entity);
         }
     }
 
-//    public boolean detectedCollision(int x, int y) {
-//
-//    }
+    /**
+     * Determines if an entity has collided with a wall.
+     * @param entity that must be checked for collision
+     * @return whether or not it has collided with a wall
+     */
+    public boolean collidedWithWall(Entity entity) {
+        for(Stationary stationary : stationaries) {
+            if(stationary instanceof Wall) {
+                if(stationary.hasCollided(entity)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if an entity has collided with a tank.
+     * @param entity that must be checked for collision
+     * @return whether or not it has collided with a tank
+     */
+    public boolean collidedWithTank(Entity entity) {
+        for(Bullet bullet : bullets) {
+            for (Tank tank : tanks) {
+                if(bullet.hasCollided(tank)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 
-    public List<Movable> getMovables() {
-        return movables;
+    public List<Bullet> getBullets() {
+        return bullets;
     }
 
     public List<Stationary> getStationaries() {

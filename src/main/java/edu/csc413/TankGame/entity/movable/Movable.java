@@ -11,14 +11,20 @@ public abstract class Movable extends Entity {
 
     private int ROTATION_SPEED;
     private int SPEED;
+
     private int vX;
     private int vY;
     private float angle;
+
+    private int prevX;
+    private int prevY;
 
     public Movable(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, image);
         this.vX = vX;
         this.vY = vY;
+        this.prevX = x;
+        this.prevY = y;
         this.angle = angle;
     }
 
@@ -46,6 +52,22 @@ public abstract class Movable extends Entity {
         this.angle = angle;
     }
 
+    public int getPrevX() {
+        return this.prevX;
+    }
+
+    public void setPrevX(int prevX) {
+        this.prevX = prevX;
+    }
+
+    public int getPrevY() {
+        return this.prevY;
+    }
+
+    public void setPrevY(int prevY) {
+        this.prevY = prevY;
+    }
+
     void setSpeed(int SPEED) {
         this.SPEED = SPEED;
     }
@@ -54,11 +76,19 @@ public abstract class Movable extends Entity {
         this.ROTATION_SPEED = ROTATION_SPEED;
     }
 
+//    void move() {
+//
+//    }
+
     /**
      * Moves the Movable object backward at the rate of SPEED and
      * at the angle of ANGLE.
      */
     void moveBackward() {
+        // Setting previous coordinates.
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+
         this.setVelocityX((int) Math.round(this.SPEED * Math.cos(Math.toRadians(this.getAngle()))));
         this.setVelocityY((int) Math.round(this.SPEED * Math.sin(Math.toRadians(this.getAngle()))));
         this.setX(this.getX() - this.getVelocityX());
@@ -71,6 +101,10 @@ public abstract class Movable extends Entity {
      * at the angle of ANGLE.
      */
     void moveForward() {
+        // Setting previous coordinates.
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+
         this.setVelocityX((int) Math.round(this.SPEED * Math.cos(Math.toRadians(this.getAngle()))));
         this.setVelocityY((int) Math.round(this.SPEED * Math.sin(Math.toRadians(this.getAngle()))));
         this.setX(this.getX() + this.getVelocityX());
@@ -114,6 +148,8 @@ public abstract class Movable extends Entity {
         }
     }
 
+    public abstract void handleCollision();
+
     /**
      * Called every time a game objects state should be updated.
      */
@@ -125,11 +161,17 @@ public abstract class Movable extends Entity {
      */
     @Override
     public void render(Graphics graphics) {
-        Graphics2D g2 = (Graphics2D) graphics;
-        AffineTransform rotation = AffineTransform.getTranslateInstance(getX(), getY());
+        if(!this.isRemoved()) {
+            Graphics2D g2 = (Graphics2D) graphics;
+            AffineTransform rotation = AffineTransform.getTranslateInstance(getX(), getY());
 
-        rotation.rotate(Math.toRadians(angle), getImage().getWidth() / 2.0, getImage().getHeight() / 2.0);
-        g2.drawImage(getImage(), rotation, null);
+            rotation.rotate(Math.toRadians(angle), getImage().getWidth() / 2.0, getImage().getHeight() / 2.0);
+            g2.drawImage(getImage(), rotation, null);
+
+            // Visualizing hitboxes.
+            g2.setColor(Color.BLUE);
+            g2.drawRect(getX(), getY(), getImage().getWidth(), getImage().getHeight());
+        }
     };
 
 }

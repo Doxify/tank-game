@@ -1,5 +1,6 @@
 package main.java.edu.csc413.TankGame.entity.movable;
 
+import main.java.edu.csc413.TankGame.Game;
 import main.java.edu.csc413.TankGame.graphics.Assets;
 import main.java.edu.csc413.TankGame.util.GameConstants;
 
@@ -105,11 +106,16 @@ public class Tank extends Movable {
             this.rotateRight();
         }
 
-        if(this.shootPressed) {
+        if(this.shootPressed && Game.tick % 25 == 0) {
             this.level.addEntity(new Bullet(getX(), getY(), getAngle(), Assets.bulletImage));
         }
 
         checkCameraBorder();
+        handleCollision();
+
+//        if(this.level.detectedCollision(this)) {
+//            System.out.println(" TANK Detected a collision");
+//        };
 
 //        if(this.shootPressed && (Game.tick % 25 == 0)) {
 //            Bullet bullet = new Bullet(x, y, angle, Game.bulletImage);
@@ -117,6 +123,15 @@ public class Tank extends Movable {
 //        }
 //
 //        this.ammo.forEach(bullet -> bullet.update());
+    }
+
+    @Override
+    public void handleCollision() {
+        // Checking if collided with wall.
+        if(level.collidedWithWall(this)) {
+            this.setX(this.getPrevX());
+            this.setY(this.getPrevY());
+        }
     }
 
 //    @Override

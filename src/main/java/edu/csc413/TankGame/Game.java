@@ -17,7 +17,7 @@ public class Game implements Runnable {
     private Level level;
 
     private boolean running;
-    private long tick;
+    public static long tick;
 
 
     public Game(Launcher launcher) {
@@ -34,8 +34,8 @@ public class Game implements Runnable {
      * Initializes Tanks and adds them to the level.
      */
     private void initializeTanks() {
-        Tank tank1 = new Tank(0, 0, 0, 0, 0, Assets.tank1Image);
-        Tank tank2 = new Tank(50, 50, 0, 0, 0, Assets.tank2Image);
+        Tank tank1 = new Tank(400, 400, 0, 0, 0, Assets.tank1Image);
+        Tank tank2 = new Tank(1600, 1600, 0, 0, 0, Assets.tank2Image);
         TankControl tank1Control = new TankControl(tank1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
         TankControl tank2Control = new TankControl(tank2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, KeyEvent.VK_SPACE);
 
@@ -48,7 +48,7 @@ public class Game implements Runnable {
         this.level.addEntity(tank2);
     }
 
-    // TODO: Put this somwhere else.
+    // TODO: Put this somwehere else.
     public JPanel getScreen() {
         return this.screen;
     }

@@ -65,11 +65,13 @@ public class Screen extends JPanel {
 
         BufferedImage left = this.image.getSubimage(tank1.getCameraX(), tank1.getCameraY(), width / 2, height);
         BufferedImage right = this.image.getSubimage(tank2.getCameraX(), tank2.getCameraY(), width / 2, height);
+        BufferedImage minimap = this.image.getSubimage(0, 0, GameConstants.WORLD_WIDTH, GameConstants.WORLD_WIDTH);
 
         g.drawImage(left, 0, 0, null);
         g.drawImage(right, (width / 2) + 4, 0, null);
 
-//        g.drawImage(this.image, 0, 0, null);
+        g.scale(0.10, 0.10);
+        g.drawImage(minimap, 0, 0, null);
 
     }
 
