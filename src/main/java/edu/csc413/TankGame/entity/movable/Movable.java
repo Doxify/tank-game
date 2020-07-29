@@ -148,6 +148,9 @@ public abstract class Movable extends Entity {
         }
     }
 
+    /**
+     *
+     */
     public abstract void handleCollision();
 
     /**

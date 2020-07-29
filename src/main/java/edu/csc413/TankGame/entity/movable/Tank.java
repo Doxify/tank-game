@@ -2,6 +2,7 @@ package main.java.edu.csc413.TankGame.entity.movable;
 
 import main.java.edu.csc413.TankGame.Game;
 import main.java.edu.csc413.TankGame.graphics.Assets;
+import main.java.edu.csc413.TankGame.graphics.ui.UIManager;
 import main.java.edu.csc413.TankGame.util.GameConstants;
 
 import java.awt.image.BufferedImage;
@@ -19,11 +20,18 @@ public class Tank extends Movable {
     private int cameraX;
     private int cameraY;
 
+    private UIManager uiManager;
+
+    private int MAX_HEALTH = 20;
+    private int health;
+
     public Tank(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, vX, vY, angle, image);
         // Setting the speed and rotation speed.
         this.setSpeed(3);
         this.setRotationSpeed(3);
+        this.uiManager = Game.getUiManager();
+        this.health = MAX_HEALTH;
     }
 
     public void toggleUpPress() {
@@ -66,6 +74,24 @@ public class Tank extends Movable {
         this.shootPressed = false;
     }
 
+    public int getMAX_HEALTH() {
+        return this.MAX_HEALTH;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public void decreaseHealth(int damage) {
+        this.health -= damage;
+        if(this.health < 0) {
+            this.health = 0;
+            this.setRemoved();
+        }
+    }
+
+
+
     /**
      * Checks if the Tank is within the world's border and
      * adjusts it's camera coordinates accordingly.
@@ -107,46 +133,21 @@ public class Tank extends Movable {
         }
 
         if(this.shootPressed && Game.tick % 25 == 0) {
-            this.level.addEntity(new Bullet(getX(), getY(), getAngle(), Assets.bulletImage));
+            this.level.addEntity(new Bullet(getX(), getY(), getAngle(), this, Assets.bulletImage));
         }
 
         checkCameraBorder();
         handleCollision();
-
-//        if(this.level.detectedCollision(this)) {
-//            System.out.println(" TANK Detected a collision");
-//        };
-
-//        if(this.shootPressed && (Game.tick % 25 == 0)) {
-//            Bullet bullet = new Bullet(x, y, angle, Game.bulletImage);
-//            this.ammo.add(bullet);
-//        }
-//
-//        this.ammo.forEach(bullet -> bullet.update());
     }
 
     @Override
     public void handleCollision() {
-        // Checking if collided with wall.
-        if(level.collidedWithWall(this)) {
+        // Checking if  collided with wall.
+        if(level.entityCollidedWithWall(this)) {
             this.setX(this.getPrevX());
             this.setY(this.getPrevY());
         }
     }
-
-//    @Override
-//    public void drawImage(Graphics graphics) {
-//        Graphics2D g2 = (Graphics2D) graphics;
-//        AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
-//
-//        rotation.rotate(Math.toRadians(angle), this.image.getWidth() / 2.0, this.image.getHeight() / 2.0);
-//        g2.drawImage(this.image, rotation, null);
-//
-//        this.ammo.forEach(bullet -> bullet.drawImage(graphics));
-//
-//        g2.setColor(Color.CYAN);
-//        g2.drawRect(x, y, this.image.getWidth(), this.image.getHeight());
-//    }
 
     /**
      * Returns the X coordinate of the camera with the Tank at the center.

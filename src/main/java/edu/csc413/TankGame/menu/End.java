@@ -42,7 +42,7 @@ public class End extends JPanel {
 
     private void configureButtons() {
         // Start Button
-        this.start = new JButton("Start");
+        this.start = new JButton("Play Again");
         this.start.setFont(new Font("Courier New", Font.BOLD, 24));
         this.start.setBounds(150, 300, 150, 50);
         this.start.addActionListener((actionEvent -> {

@@ -65,7 +65,7 @@ public class Launcher {
             }
             case "end": {
                 this.jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
-                this.game.stop();
+//                this.game.stop();
                 break;
             }
             case "game": {

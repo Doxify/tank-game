@@ -52,17 +52,19 @@ public abstract class Entity {
         this.image = image;
     }
 
+    /**
+     * Has an entity been marked for removal?
+     * @return removal status
+     */
     public boolean isRemoved() {
         return this.removed;
     }
 
+    /**
+     * Marking an entity for removal.
+     */
     public void setRemoved() {
         this.removed = true;
-    }
-
-    public void remove() {
-        this.removed = true;
-        this.level.removeEntity(this);
     }
 
     public Rectangle getHitbox() {

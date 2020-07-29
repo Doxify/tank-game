@@ -98,9 +98,8 @@ public class Level {
      * Handles the clean up of entities from the Level.
      */
     private void remove() {
-        bullets.forEach(movable -> { if(movable.isRemoved()) movable.remove(); });
-        stationaries.forEach(stationary -> { if(stationary.isRemoved()) stationary.remove(); });
-        tanks.forEach(tank -> { if(tank.isRemoved()) tank.remove(); });
+        bullets.removeIf(Entity::isRemoved);
+        stationaries.removeIf(Entity::isRemoved);
     }
 
     /**
@@ -109,7 +108,7 @@ public class Level {
     public void update() {
         bullets.forEach(Movable::update);
         tanks.forEach(Tank::update);
-//        remove();
+        remove();
     }
 
     /**
@@ -158,7 +157,7 @@ public class Level {
      * @param entity that must be checked for collision
      * @return whether or not it has collided with a wall
      */
-    public boolean collidedWithWall(Entity entity) {
+    public boolean entityCollidedWithWall(Entity entity) {
         for(Stationary stationary : stationaries) {
             if(stationary instanceof Wall) {
                 if(stationary.hasCollided(entity)) {
@@ -172,14 +171,28 @@ public class Level {
     /**
      * Determines if an entity has collided with a tank.
      * @param entity that must be checked for collision
-     * @return whether or not it has collided with a tank
+     * @return whether or not an entity has collided with
+     *         entity.
      */
-    public boolean collidedWithTank(Entity entity) {
-        for(Bullet bullet : bullets) {
-            for (Tank tank : tanks) {
-                if(bullet.hasCollided(tank)) {
-                    return true;
+    public boolean entityCollidedWithTank(Entity entity) {
+        for(Tank tank : tanks) {
+            if(tank.hasCollided(entity)) {
+                // If the entity that called the function is a Bullet,
+                // check to make sure that the bullet was not fired
+                // by the tank it hit.
+                if(entity instanceof Bullet) {
+
+                    if(((Bullet) entity).getOwner() != tank) {
+                        tank.decreaseHealth(2);
+                        System.out.println("Tank1: " + tank.getHealth() + "/" + tank.getMAX_HEALTH());
+                        return true;
+                    }
+                    return false;
                 }
+
+                // Otherwise return true since a collision has
+                // been detected.
+                return true;
             }
         }
         return false;
