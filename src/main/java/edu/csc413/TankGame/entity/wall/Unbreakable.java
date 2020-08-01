@@ -1,4 +1,4 @@
-package main.java.edu.csc413.TankGame.entity.stationary.wall;
+package main.java.edu.csc413.TankGame.entity.wall;
 
 import java.awt.image.BufferedImage;
 

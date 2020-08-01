@@ -1,29 +1,29 @@
 package main.java.edu.csc413.TankGame;
 
-import main.java.edu.csc413.TankGame.entity.movable.Tank;
-import main.java.edu.csc413.TankGame.graphics.Assets;
 import main.java.edu.csc413.TankGame.graphics.Screen;
 import main.java.edu.csc413.TankGame.graphics.ui.UIManager;
 import main.java.edu.csc413.TankGame.level.Level;
-import main.java.edu.csc413.TankGame.util.TankControl;
+import main.java.edu.csc413.TankGame.util.GameConstants;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
-public class Game implements Runnable {
+public class Game extends JPanel implements Runnable {
 
-    private int width, height;
+    private int width = GameConstants.GAME_WIDTH;
+    private int height = GameConstants.GAME_HEIGHT;
 
     private Thread gameThread;
-    private Launcher launcher;
-    private Level level;
+    private final Launcher launcher;
+    private final Level level;
 
-    private Screen screen;
+    private final BufferedImage image;
+    private final Screen screen;
     private static UIManager uiManager;
 
     private boolean running;
     public static long tick;
-
 
     public Game(Launcher launcher) {
         this.launcher = launcher;
@@ -31,34 +31,12 @@ public class Game implements Runnable {
         this.screen = new Screen(level);
         this.running = false;
 
+        // Initializing Game image
+        this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
         // Initializing static members
         tick = 0;
         uiManager = new UIManager();
-
-        initializeTanks();
-    }
-
-    /**
-     * Initializes Tanks and adds them to the level.
-     */
-    private void initializeTanks() {
-        Tank tank1 = new Tank(400, 400, 0, 0, 0, Assets.tank1Image);
-        Tank tank2 = new Tank(500, 500, 0, 0, 0, Assets.tank2Image);
-        TankControl tank1Control = new TankControl(tank1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
-        TankControl tank2Control = new TankControl(tank2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, KeyEvent.VK_SPACE);
-
-        // Registering control listeners
-        this.launcher.getJFrame().addKeyListener(tank1Control);
-        this.launcher.getJFrame().addKeyListener(tank2Control);
-
-        // Adding to the level.
-        this.level.addEntity(tank1);
-        this.level.addEntity(tank2);
-    }
-
-    // TODO: Put this somwehere else.
-    public JPanel getScreen() {
-        return screen;
     }
 
     public static UIManager getUiManager() {
@@ -66,7 +44,7 @@ public class Game implements Runnable {
     }
 
     private void resetGameState() {
-
+        //TODO: This
     }
 
     /**
@@ -88,6 +66,7 @@ public class Game implements Runnable {
             this.running = false;
             try {
                 this.gameThread.join();
+                this.launcher.setPanel("end");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -102,23 +81,45 @@ public class Game implements Runnable {
         try {
             while(running) {
                 this.tick++;
-                this.screen.repaint();
-                this.level.update();
-                uiManager.render(screen);
-
-                // If any of the tanks have been marked for removal,
-                // the game is over and we show the exit screen.
-                level.getTanks().forEach(tank -> {
-                    if(tank.isRemoved()) {
-                        this.launcher.setPanel("end");
-                    }
-                });
-
-                this.screen.repaint();
-                Thread.sleep(1244 / 144);
+                update();
+                Thread.sleep(10);
             }
+            stop();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void update() {
+        repaint();
+        level.update();
+        repaint();
+    }
+
+//    public void render() {
+//        Graphics2D graphics = this.image.createGraphics();
+//        graphics.setColor(Color.BLACK);
+//        graphics.fillRect(0, 0, width, height);
+//
+//        // First we render the screen
+//        screen.render(graphics);
+//        graphics.drawImage(image, 0, 0, null);
+//
+//        System.out.println("called");
+//        // Then we render the UI on top of the level
+//    }
+
+    @Override
+    public void paintComponent(Graphics graphics) {
+        Graphics2D g2 = (Graphics2D) graphics;
+        Graphics buffer = this.image.createGraphics();
+
+        buffer.setColor(Color.BLACK);
+        buffer.fillRect(0, 0, width, height);
+
+//        buffer.drawImage(Assets.worldImage, 0, 0, width, height, null);
+
+        screen.render(buffer);
+        g2.drawImage(image, 0, 0, width, height, null);
     }
 }

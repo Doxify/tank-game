@@ -15,6 +15,7 @@ public class Tank extends Movable {
     private boolean rightPressed;
     private boolean leftPressed;
     private boolean shootPressed;
+    private int firingSpeed;
 
     // Camera variables
     private int cameraX;
@@ -22,16 +23,20 @@ public class Tank extends Movable {
 
     private UIManager uiManager;
 
+    // Health Variables
     private int MAX_HEALTH = 20;
+    private int HEALTH_DECREASE_MODIFIER = 2;
+    private int lives = 3;
     private int health;
 
     public Tank(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, vX, vY, angle, image);
         // Setting the speed and rotation speed.
         this.setSpeed(3);
-        this.setRotationSpeed(3);
+        this.setRotationSpeed(2);
         this.uiManager = Game.getUiManager();
         this.health = MAX_HEALTH;
+        this.firingSpeed = 7;
     }
 
     public void toggleUpPress() {
@@ -74,7 +79,16 @@ public class Tank extends Movable {
         this.shootPressed = false;
     }
 
-    public int getMAX_HEALTH() {
+    public int getFiringSpeed() {
+        return this.firingSpeed;
+    }
+
+    public void setFiringSpeed(int firingSpeed) {
+        this.firingSpeed = firingSpeed;
+    }
+
+    // Health Functions
+    public int getMaxHealth() {
         return this.MAX_HEALTH;
     }
 
@@ -82,14 +96,29 @@ public class Tank extends Movable {
         return this.health;
     }
 
-    public void decreaseHealth(int damage) {
-        this.health -= damage;
-        if(this.health < 0) {
-            this.health = 0;
-            this.setRemoved();
-        }
+    public void resetHealth() {
+        this.health = this.MAX_HEALTH;
     }
 
+    public int getHealthDecreaseModifier() {
+        return this.HEALTH_DECREASE_MODIFIER;
+    }
+
+    public void setHealthDecreaseModifier(int HEALTH_DECREASE_MODIFIER) {
+        this.HEALTH_DECREASE_MODIFIER = HEALTH_DECREASE_MODIFIER;
+    }
+
+    public void decreaseHealth() {
+        this.health -= HEALTH_DECREASE_MODIFIER;
+        if(this.health <= 0) {
+            lives--;
+            if(lives <= 0) {
+                this.lives = 0;
+                this.health = 0;
+                this.setRemoved();
+            }
+        }
+    }
 
 
     /**
@@ -133,7 +162,7 @@ public class Tank extends Movable {
         }
 
         if(this.shootPressed && Game.tick % 25 == 0) {
-            this.level.addEntity(new Bullet(getX(), getY(), getAngle(), this, Assets.bulletImage));
+            this.level.addEntity(new Bullet(getX(), getY(), getAngle(), this, firingSpeed, Assets.bulletImage));
         }
 
         checkCameraBorder();
@@ -142,11 +171,14 @@ public class Tank extends Movable {
 
     @Override
     public void handleCollision() {
-        // Checking if  collided with wall.
-        if(level.entityCollidedWithWall(this)) {
+        // Checking if TANK collided with wall or another tank.
+        if(level.entityCollidedWithWall(this) || level.entityCollidedWithTank(this)) {
             this.setX(this.getPrevX());
             this.setY(this.getPrevY());
         }
+
+        // Checking if TANK collided with boost.
+        level.entityCollidedWithBoost(this);
     }
 
     /**

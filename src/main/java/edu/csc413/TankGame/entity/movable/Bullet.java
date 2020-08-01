@@ -5,12 +5,12 @@ import java.awt.image.BufferedImage;
 public class Bullet extends Movable {
 
     // The tank that fired the bullet.
-    private Tank owner;
+    private final Tank owner;
 
-    public Bullet(int x, int y, float angle, Tank owner, BufferedImage image) {
+    public Bullet(int x, int y, float angle, Tank owner, int speed, BufferedImage image) {
         super(x, y, 0, 0, angle, image);
         // Setting the speed of bullets.
-        this.setSpeed(7);
+        this.setSpeed(speed);
         this.owner = owner;
     }
 

@@ -56,29 +56,21 @@ public abstract class Movable extends Entity {
         return this.prevX;
     }
 
-    public void setPrevX(int prevX) {
-        this.prevX = prevX;
-    }
-
     public int getPrevY() {
         return this.prevY;
     }
 
-    public void setPrevY(int prevY) {
-        this.prevY = prevY;
+    public int getSpeed() {
+        return this.SPEED;
     }
 
-    void setSpeed(int SPEED) {
+    public void setSpeed(int SPEED) {
         this.SPEED = SPEED;
     }
 
-    void setRotationSpeed(int ROTATION_SPEED) {
+    public void setRotationSpeed(int ROTATION_SPEED) {
         this.ROTATION_SPEED = ROTATION_SPEED;
     }
-
-//    void move() {
-//
-//    }
 
     /**
      * Moves the Movable object backward at the rate of SPEED and
@@ -149,7 +141,7 @@ public abstract class Movable extends Entity {
     }
 
     /**
-     *
+     * Function that happens when a Movable collides something.
      */
     public abstract void handleCollision();
 
@@ -168,12 +160,12 @@ public abstract class Movable extends Entity {
             Graphics2D g2 = (Graphics2D) graphics;
             AffineTransform rotation = AffineTransform.getTranslateInstance(getX(), getY());
 
-            rotation.rotate(Math.toRadians(angle), getImage().getWidth() / 2.0, getImage().getHeight() / 2.0);
-            g2.drawImage(getImage(), rotation, null);
+            rotation.rotate(Math.toRadians(angle), image.getWidth() / 2.0, image.getHeight() / 2.0);
+            g2.drawImage(image, rotation, null);
 
             // Visualizing hitboxes.
             g2.setColor(Color.BLUE);
-            g2.drawRect(getX(), getY(), getImage().getWidth(), getImage().getHeight());
+            g2.drawRect(getX(), getY(), image.getWidth(), image.getHeight());
         }
     };
 

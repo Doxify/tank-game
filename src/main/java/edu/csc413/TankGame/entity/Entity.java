@@ -8,10 +8,9 @@ import java.awt.image.BufferedImage;
 public abstract class Entity {
 
     private int x, y;
-    private BufferedImage image;
-    private Rectangle hitbox;
     private boolean removed;
-
+    private final Rectangle hitbox;
+    protected BufferedImage image;
     protected Level level;
 
     public Entity(int x, int y, BufferedImage image) {
@@ -44,13 +43,13 @@ public abstract class Entity {
         this.hitbox.setLocation(x, y);
     }
 
-    public BufferedImage getImage() {
-        return this.image;
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
+//    public BufferedImage getImage() {
+//        return this.image;
+//    }
+//
+//    public void setImage(BufferedImage image) {
+//        this.image = image;
+//    }
 
     /**
      * Has an entity been marked for removal?

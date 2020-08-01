@@ -1,17 +1,20 @@
 package main.java.edu.csc413.TankGame.level;
 
+import main.java.edu.csc413.TankGame.Launcher;
 import main.java.edu.csc413.TankGame.entity.Entity;
+import main.java.edu.csc413.TankGame.entity.boost.*;
 import main.java.edu.csc413.TankGame.entity.movable.Bullet;
 import main.java.edu.csc413.TankGame.entity.movable.Movable;
 import main.java.edu.csc413.TankGame.entity.movable.Tank;
-import main.java.edu.csc413.TankGame.entity.stationary.Stationary;
-import main.java.edu.csc413.TankGame.entity.stationary.wall.Breakable;
-import main.java.edu.csc413.TankGame.entity.stationary.wall.Unbreakable;
-import main.java.edu.csc413.TankGame.entity.stationary.wall.Wall;
+import main.java.edu.csc413.TankGame.entity.wall.Breakable;
+import main.java.edu.csc413.TankGame.entity.wall.Unbreakable;
+import main.java.edu.csc413.TankGame.entity.wall.Wall;
 import main.java.edu.csc413.TankGame.graphics.Assets;
 import main.java.edu.csc413.TankGame.util.GameConstants;
+import main.java.edu.csc413.TankGame.util.TankControl;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,15 +27,39 @@ public class Level {
     private int width = GameConstants.WORLD_WIDTH;
     private int height = GameConstants.WORLD_HEIGHT;
 
-//    private final List<Movable> movables = new ArrayList<>();
     private final List<Bullet> bullets = new ArrayList<>();
-    private final List<Stationary> stationaries = new ArrayList<>();
+    private final List<Wall> walls = new ArrayList<>();
+    private final List<Boost> boosts = new ArrayList<>();
     private final List<Tank> tanks = new ArrayList<>();
 
     public Level(String levelName) {
         loadLevel(levelName);
+        initializeTanks();
     }
 
+    /**
+     * Initializes Tanks and adds them to the level.
+     */
+    private void initializeTanks() {
+        Tank tank1 = new Tank(400, 400, 0, 0, 0, Assets.tank1Image);
+        Tank tank2 = new Tank(400, 475, 0, 0, 0, Assets.tank2Image);
+        TankControl tank1Control = new TankControl(tank1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
+        TankControl tank2Control = new TankControl(tank2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, KeyEvent.VK_SPACE);
+
+        // Registering control listeners
+        Launcher.getJFrame().addKeyListener(tank1Control);
+        Launcher.getJFrame().addKeyListener(tank2Control);
+
+        // Adding tanks into Level
+        addEntity(tank1);
+        addEntity(tank2);
+    }
+
+    /**
+     * Loads a map from file into memory.
+     * Responsible for loading walls and boosts.
+     * @param levelName to load from /resources/maps/
+     */
     private void loadLevel(String levelName) {
         try {
             InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/" + levelName)));
@@ -64,19 +91,20 @@ public class Level {
                         }
                         // Boosts
                         case "4": {
-
+                            addEntity(new Health(x, y, Assets.healthBoostImage));
+                            break;
                         }
                         case "5": {
-
+                            addEntity(new BulletSpeed(x, y, 5000, Assets.ammoBoostImage));
+                            break;
                         }
                         case "6": {
-
+                            addEntity(new Speed(x, y, 5000, Assets.speedBoostImage));
+                            break;
                         }
                         case "7": {
-
-                        }
-                        case "8": {
-
+                            addEntity(new Shield(x, y, 5000, Assets.shieldBoostImage));
+                            break;
                         }
                     }
                 }
@@ -99,7 +127,8 @@ public class Level {
      */
     private void remove() {
         bullets.removeIf(Entity::isRemoved);
-        stationaries.removeIf(Entity::isRemoved);
+        walls.removeIf(Entity::isRemoved);
+//        boosts.removeIf(Entity::isRemoved);
     }
 
     /**
@@ -111,30 +140,32 @@ public class Level {
         remove();
     }
 
+
     /**
-     * Calls on entities to render themselves to the buffer.
-     * @param buffer to render to
+     * Renders all entities to the graphics buffer.
+     * @param graphics to render to
      */
-    public void render(Graphics buffer) {
-        bullets.forEach(movable -> movable.render(buffer));
-        stationaries.forEach(stationary -> stationary.render(buffer));
-        tanks.forEach(tank -> tank.render(buffer));
+    public void render(Graphics graphics) {
+        bullets.forEach(movable -> movable.render(graphics));
+        tanks.forEach(tank -> tank.render(graphics));
+        walls.forEach(stationary -> stationary.render(graphics));
+        boosts.forEach(boost -> boost.render(graphics));
     }
 
     /**
-     * Adds a new GameObject to the Level.
+     * Adds a new Entity to the Level.
      * @param entity to add
      */
     public void addEntity(Entity entity) {
         entity.init(this);
         if (entity instanceof Tank) {
             tanks.add((Tank) entity);
-//        } else if(entity instanceof Movable) {
-//            movables.add((Movable) entity);
         } else if(entity instanceof Bullet) {
             bullets.add((Bullet) entity);
-        } else if(entity instanceof Stationary) {
-            stationaries.add((Stationary) entity);
+        } else if(entity instanceof Wall) {
+            walls.add((Wall) entity);
+        } else if(entity instanceof Boost) {
+            boosts.add((Boost) entity);
         }
     }
 
@@ -147,8 +178,10 @@ public class Level {
             tanks.remove(entity);
         } else if(entity instanceof Bullet) {
             bullets.remove(entity);
-        } else if(entity instanceof Stationary) {
-            stationaries.remove(entity);
+        } else if(entity instanceof Wall) {
+            walls.remove(entity);
+        } else if(entity instanceof Boost) {
+            boosts.remove(entity);
         }
     }
 
@@ -158,11 +191,23 @@ public class Level {
      * @return whether or not it has collided with a wall
      */
     public boolean entityCollidedWithWall(Entity entity) {
-        for(Stationary stationary : stationaries) {
-            if(stationary instanceof Wall) {
-                if(stationary.hasCollided(entity)) {
-                    return true;
+        for(Wall wall : walls) {
+            if(wall.hasCollided(entity)) {
+                handleEntityWallCollision(entity, wall);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean entityCollidedWithBoost(Entity entity) {
+        for(Boost boost : boosts) {
+            if(boost.hasCollided(entity)) {
+                if(entity instanceof Tank) {
+                    boost.enableBoost((Tank) entity);
+                    boost.setRemoved();
                 }
+                return true;
             }
         }
         return false;
@@ -181,15 +226,13 @@ public class Level {
                 // check to make sure that the bullet was not fired
                 // by the tank it hit.
                 if(entity instanceof Bullet) {
-
                     if(((Bullet) entity).getOwner() != tank) {
-                        tank.decreaseHealth(2);
-                        System.out.println("Tank1: " + tank.getHealth() + "/" + tank.getMAX_HEALTH());
+                        tank.decreaseHealth();
+                        System.out.println("Tank1: " + tank.getHealth() + "/" + tank.getMaxHealth());
                         return true;
                     }
                     return false;
                 }
-
                 // Otherwise return true since a collision has
                 // been detected.
                 return true;
@@ -198,17 +241,13 @@ public class Level {
         return false;
     }
 
-
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
-
-    public List<Stationary> getStationaries() {
-        return stationaries;
-    }
-
-    public List<Tank> getTanks() {
-        return tanks;
+    private void handleEntityWallCollision(Entity entity, Wall wall) {
+        // If a bullet collides with a wall and the wall is breakable
+        // we should decrease the state of the wall.
+        if(entity instanceof Bullet && wall.isBreakable()) {
+            Breakable breakable = (Breakable) wall;
+            breakable.decreaseState();
+        }
     }
 
     public Tank getTank(int index) {

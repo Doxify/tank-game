@@ -10,7 +10,7 @@ import java.awt.*;
 public class Launcher {
 
     // Frame and Card Layout
-    private JFrame jFrame;
+    private static JFrame jFrame;
     private CardLayout cardLayout;
 
     // Panels
@@ -21,11 +21,11 @@ public class Launcher {
     private Game game;
 
     public Launcher() {
-        this.jFrame = new JFrame();
-        this.jFrame.setResizable(false);
-        this.jFrame.setTitle("Tank Wars | Andrei Georgescu");
-        this.jFrame.setLocationRelativeTo(null);
-        this.jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame = new JFrame();
+        jFrame.setResizable(false);
+        jFrame.setTitle("Tank Wars | Andrei Georgescu");
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void initUserInterface() {
@@ -42,8 +42,8 @@ public class Launcher {
         this.mainPanel.setLayout(this.cardLayout);
         this.mainPanel.add(this.startPanel, "start");
         this.mainPanel.add(this.endPanel, "end");
-        this.mainPanel.add(this.game.getScreen(), "game");
-        this.jFrame.add(mainPanel);
+        this.mainPanel.add(this.game, "game");
+        jFrame.add(mainPanel);
 
         // Setting the current panel to start panel.
         this.setPanel("start");
@@ -55,21 +55,21 @@ public class Launcher {
      */
     public void setPanel(String type) {
         // Hiding the jFrame while making changes.
-        this.jFrame.setVisible(false);
+        jFrame.setVisible(false);
 
         // Setting the current panel.
         switch (type.toLowerCase()) {
             case "start": {
-                this.jFrame.setSize(GameConstants.START_MENU_SCREEN_WIDTH, GameConstants.START_MENU_SCREEN_HEIGHT);
+                jFrame.setSize(GameConstants.START_MENU_SCREEN_WIDTH, GameConstants.START_MENU_SCREEN_HEIGHT);
                 break;
             }
             case "end": {
-                this.jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
+                jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
 //                this.game.stop();
                 break;
             }
             case "game": {
-                this.jFrame.setSize(GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT + 30);
+                jFrame.setSize(GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
                 this.game.start();
                 break;
             }
@@ -83,8 +83,8 @@ public class Launcher {
     /**
      * Returns the jFrame
      */
-    public JFrame getJFrame() {
-        return this.jFrame;
+    public static JFrame getJFrame() {
+        return jFrame;
     }
 
     /**
