@@ -21,17 +21,18 @@ public class Tank extends Movable {
     private int cameraY;
 
     // Health Variables
-    private int MAX_HEALTH = 20;
+    public final static int MAX_HEALTH = 20;
+    public final static int MAX_LIVES = 3;
     private int HEALTH_DECREASE_MODIFIER = 2;
-    private int lives = 3;
+    private int lives;
     private int health;
 
     public Tank(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, vX, vY, angle, image);
-        // Setting the speed and rotation speed.
         this.setSpeed(2);
         this.setRotationSpeed(2);
         this.health = MAX_HEALTH;
+        this.lives = MAX_LIVES;
         this.firingSpeed = 7;
     }
 
@@ -85,7 +86,7 @@ public class Tank extends Movable {
 
     // Health Functions
     public int getMaxHealth() {
-        return this.MAX_HEALTH;
+        return MAX_HEALTH;
     }
 
     public int getHealth() {
@@ -93,7 +94,11 @@ public class Tank extends Movable {
     }
 
     public void resetHealth() {
-        this.health = this.MAX_HEALTH;
+        this.health = MAX_HEALTH;
+    }
+
+    public int getLives() {
+        return this.lives;
     }
 
     public int getHealthDecreaseModifier() {
@@ -116,7 +121,6 @@ public class Tank extends Movable {
         }
     }
 
-
     /**
      * Checks if the Tank is within the world's border and
      * adjusts it's camera coordinates accordingly.
@@ -134,6 +138,22 @@ public class Tank extends Movable {
         if(getY() > yLowerBound && getY() < yUpperBound) {
             this.cameraY = Math.abs(getY() - (GameConstants.SCREEN_HEIGHT / 2));
         }
+    }
+
+    /**
+     * Returns the X coordinate of the camera with the Tank at the center.
+     * @return x coordinate of the camera.
+     */
+    public int getCameraX() {
+        return this.cameraX;
+    }
+
+    /**
+     * Returns the Y coordinate of the camera with the Tank at the center.
+     * @return Y coordinate of the camera.
+     */
+    public int getCameraY() {
+        return this.cameraY;
     }
 
     /**
@@ -175,22 +195,6 @@ public class Tank extends Movable {
 
         // Checking if TANK collided with boost.
         level.entityCollidedWithBoost(this);
-    }
-
-    /**
-     * Returns the X coordinate of the camera with the Tank at the center.
-     * @return x coordinate of the camera.
-     */
-    public int getCameraX() {
-        return this.cameraX;
-    }
-
-    /**
-     * Returns the Y coordinate of the camera with the Tank at the center.
-     * @return Y coordinate of the camera.
-     */
-    public int getCameraY() {
-        return this.cameraY;
     }
 
     /**

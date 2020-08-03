@@ -12,16 +12,12 @@ public class Screen extends JPanel {
 
     private final Level level;
     private final BufferedImage game;
-//    private final BufferedImage ui;
-
-    // User Interface Variables
-    private final int xUiOffset = Math.round(GameConstants.SCREEN_WIDTH * 8.4f);
-    private final int yUiOffset = 10;
-
+    private final BufferedImage ui;
 
     public Screen(Level level) {
         this.level = level;
         this.game = new BufferedImage(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        this.ui = new BufferedImage(GameConstants.GAME_WIDTH - GameConstants.SCREEN_WIDTH, GameConstants.GAME_HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
     /**
@@ -38,35 +34,87 @@ public class Screen extends JPanel {
         g.drawImage(right, (GameConstants.SCREEN_WIDTH / 2) + 4, 0, null);
     }
 
-    private void renderMiniMap(Graphics2D g) {
+    private void renderMiniMap(Graphics buffer) {
+        Graphics2D g2 = (Graphics2D) buffer;
         BufferedImage miniMap = game.getSubimage(0, 0, GameConstants.WORLD_WIDTH, GameConstants.WORLD_WIDTH);
-        g.scale(0.12, 0.12);
-        g.drawImage(miniMap, xUiOffset, 0, null);
+        g2.scale(0.12, 0.12);
+        g2.drawImage(miniMap, 40, 40, null);
     }
 
-//    private void renderTankData(Graphics2D g) {
-//        BufferedImage tank1 = new BufferedImage()
-//    }
+    private BufferedImage renderTankHealthData(Graphics buffer) {
+        BufferedImage image = new BufferedImage(GameConstants.GAME_WIDTH - GameConstants.SCREEN_WIDTH, 200, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = image.getGraphics();
+        int yOffset = 30; // Used to evenly space data from Tank1 and Tank2.
 
-    @Override
-    public void paintComponent(Graphics graphics) {
-        Graphics2D g2 = (Graphics2D) graphics;
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Helvetica", Font.BOLD, 25));
+        g.drawString("Tank Health", 5, 25);
+        g.setFont(new Font("Helvetica", Font.PLAIN, 20));
+
+        // Looping through tanks and rendering each one.
+        for(Tank tank : level.getTanks()) {
+            g.drawImage(tank.getImage(), 5, yOffset, null);
+
+            // Health Points + Lives
+            g.drawString("HP: " + tank.getHealth(),tank.getImage().getWidth() + 10, (yOffset - 3) + tank.getImage().getHeight() / 2 );
+            g.drawString("Lives: ",tank.getImage().getWidth() + 105,(yOffset - 3) + tank.getImage().getHeight() / 2 );
+            for(int i = 0; i < Tank.MAX_LIVES; i++) {
+                if(tank.getLives() >= i) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.GRAY);
+                }
+                g.drawString("|",tank.getImage().getWidth() + 165 + (i * 10), (yOffset - 3) + tank.getImage().getHeight() / 2 );
+            }
+
+            // Healthbar
+            g.setColor(Color.RED);
+            g.fillRect(tank.getImage().getWidth() + 10, (yOffset + 3) + tank.getImage().getHeight() / 2, 9 * tank.getHealth(), 15);
+            g.setColor(Color.WHITE);
+            g.drawRect(tank.getImage().getWidth() + 10, (yOffset + 3) + tank.getImage().getHeight() / 2, 180, 15);
+
+            // Increase the yOffset
+            yOffset*=3;
+        }
+
+        return image;
+    }
+
+
+    private void renderGameScreen(Graphics2D g2) {
         Graphics gameBuffer = game.createGraphics();
-//        Graphics uiBuffer = ui.createGraphics();
-
         gameBuffer.setColor(Color.BLACK);
         gameBuffer.fillRect(0, 0, GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT);
-
-//        uiBuffer.setColor(Color.BLACK);
-//        uiBuffer.fillRect(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
 
         // Rendering Level
         level.render(gameBuffer);
 
-        // Rendering User Interface
+        // Rendering Split Screen
         renderSplitScreen(g2);
-        renderMiniMap(g2);
+    }
 
+    private void renderUserInterface(Graphics2D g2) {
+        Graphics uiBuffer = ui.createGraphics();
+        uiBuffer.setColor(Color.BLACK);
+        uiBuffer.fillRect(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
+
+        // Rendering User Interface
+        renderMiniMap(uiBuffer);
+
+        BufferedImage tankData = renderTankHealthData(uiBuffer);
+
+        g2.drawImage(ui, GameConstants.SCREEN_WIDTH + 10, 0, null);
+        g2.drawImage(tankData, GameConstants.SCREEN_WIDTH + 10, 250, null);
+    }
+
+    @Override
+    public void paintComponent(Graphics graphics) {
+        Graphics2D g2 = (Graphics2D) graphics;
+        renderGameScreen(g2);
+        renderUserInterface(g2);
     }
 
 }

@@ -63,6 +63,10 @@ public abstract class Entity {
         return this.hitbox.getBounds();
     }
 
+    public BufferedImage getImage() {
+        return image;
+    }
+
     /**
      * Checks if an Entity has collided with another Entity.
      * @param entity to check against

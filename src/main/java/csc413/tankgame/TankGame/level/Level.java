@@ -237,6 +237,10 @@ public class Level {
         }
     }
 
+    public List<Tank> getTanks() {
+        return tanks;
+    }
+
     public Tank getTank(int index) {
         return tanks.get(index);
     }
