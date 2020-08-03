@@ -10,6 +10,7 @@ public abstract class Entity {
     private int x, y;
     private boolean removed;
     private final Rectangle hitbox;
+
     protected BufferedImage image;
     protected Level level;
 
@@ -42,14 +43,6 @@ public abstract class Entity {
         this.y = y;
         this.hitbox.setLocation(x, y);
     }
-
-//    public BufferedImage getImage() {
-//        return this.image;
-//    }
-//
-//    public void setImage(BufferedImage image) {
-//        this.image = image;
-//    }
 
     /**
      * Has an entity been marked for removal?

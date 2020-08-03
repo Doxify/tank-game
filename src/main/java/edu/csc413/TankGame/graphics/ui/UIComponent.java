@@ -2,19 +2,26 @@ package main.java.edu.csc413.TankGame.graphics.ui;
 
 import java.awt.*;
 
-public class UIComponent {
+public abstract class UIComponent  {
 
-    protected int x, y;
+    private int x, y;
+    private int xOffset, yOffset;
+    private UIPanel uiPanel;
 
-    public UIComponent(int x, int y) {
+    public UIComponent(int x, int y, int xOffset, int yOffset) {
         this.x = x;
         this.y = y;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
     }
 
-    public void render(Graphics graphics) {
-
+    public void init(UIPanel uiPanel) {
+        this.uiPanel = uiPanel;
     }
 
+    public abstract void update();
+
+    public abstract void render(Graphics graphics);
 
 
 }

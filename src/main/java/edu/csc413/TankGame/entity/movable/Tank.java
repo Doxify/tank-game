@@ -161,7 +161,7 @@ public class Tank extends Movable {
             this.rotateRight();
         }
 
-        if(this.shootPressed && Game.tick % 25 == 0) {
+        if(this.shootPressed && Game.getTick() % 25 == 0) {
             this.level.addEntity(new Bullet(getX(), getY(), getAngle(), this, firingSpeed, Assets.bulletImage));
         }
 

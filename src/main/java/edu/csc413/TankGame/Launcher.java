@@ -30,23 +30,23 @@ public class Launcher {
 
     private void initUserInterface() {
         // Instantiating panels
-        this.mainPanel = new JPanel();
-        this.startPanel = new Start(this);
-        this.endPanel = new End(this);
-        this.cardLayout = new CardLayout();
+        mainPanel = new JPanel();
+        startPanel = new Start(this);
+        endPanel = new End(this);
+        cardLayout = new CardLayout();
 
         // Instantiating game
-        this.game = new Game(this);
+        game = new Game(this);
 
         // Adding panels into Frame
-        this.mainPanel.setLayout(this.cardLayout);
-        this.mainPanel.add(this.startPanel, "start");
-        this.mainPanel.add(this.endPanel, "end");
-        this.mainPanel.add(this.game, "game");
+        mainPanel.setLayout(cardLayout);
+        mainPanel.add(startPanel, "start");
+        mainPanel.add(endPanel, "end");
+        mainPanel.add(game.getScreen(), "game");
         jFrame.add(mainPanel);
 
         // Setting the current panel to start panel.
-        this.setPanel("start");
+        setPanel("start");
     }
 
     /**
@@ -65,19 +65,19 @@ public class Launcher {
             }
             case "end": {
                 jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
-//                this.game.stop();
+//                game.stop();
                 break;
             }
             case "game": {
                 jFrame.setSize(GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
-                this.game.start();
+                game.start();
                 break;
             }
         }
 
         // Changing CardLayout and showing the jFrame again.
-        this.cardLayout.show(mainPanel, type);
-        this.jFrame.setVisible(true);
+        cardLayout.show(mainPanel, type);
+        jFrame.setVisible(true);
     }
 
     /**

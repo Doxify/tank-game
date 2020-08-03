@@ -10,7 +10,6 @@ import main.java.edu.csc413.TankGame.entity.wall.Breakable;
 import main.java.edu.csc413.TankGame.entity.wall.Unbreakable;
 import main.java.edu.csc413.TankGame.entity.wall.Wall;
 import main.java.edu.csc413.TankGame.graphics.Assets;
-import main.java.edu.csc413.TankGame.util.GameConstants;
 import main.java.edu.csc413.TankGame.util.TankControl;
 
 import java.awt.*;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Level {
-
-    private int width = GameConstants.WORLD_WIDTH;
-    private int height = GameConstants.WORLD_HEIGHT;
 
     private final List<Bullet> bullets = new ArrayList<>();
     private final List<Wall> walls = new ArrayList<>();
@@ -114,21 +110,13 @@ public class Level {
         }
     }
 
-    public int getWidth() {
-        return this.width;
-    }
-
-    public int getHeight() {
-        return this.height;
-    }
-
     /**
      * Handles the clean up of entities from the Level.
      */
     private void remove() {
         bullets.removeIf(Entity::isRemoved);
         walls.removeIf(Entity::isRemoved);
-//        boosts.removeIf(Entity::isRemoved);
+        boosts.removeIf(Entity::isRemoved);
     }
 
     /**
@@ -140,16 +128,15 @@ public class Level {
         remove();
     }
 
-
     /**
      * Renders all entities to the graphics buffer.
-     * @param graphics to render to
+     * @param buffer to render to
      */
-    public void render(Graphics graphics) {
-        bullets.forEach(movable -> movable.render(graphics));
-        tanks.forEach(tank -> tank.render(graphics));
-        walls.forEach(stationary -> stationary.render(graphics));
-        boosts.forEach(boost -> boost.render(graphics));
+    public void render(Graphics buffer) {
+        bullets.forEach(movable -> movable.render(buffer));
+        tanks.forEach(tank -> tank.render(buffer));
+        walls.forEach(stationary -> stationary.render(buffer));
+        boosts.forEach(boost -> boost.render(buffer));
     }
 
     /**
