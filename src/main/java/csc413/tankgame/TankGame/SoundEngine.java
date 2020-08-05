@@ -1,23 +1,26 @@
 package csc413.tankgame.TankGame;
 
-import csc413.tankgame.TankGame.level.Level;
-import csc413.tankgame.TankGame.util.Assets;
-
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
 
 public class SoundEngine implements Runnable {
 
     private Thread soundThread;
-    private Clip clip;
-    private Level level;
     private boolean running;
 
-    public SoundEngine(Level level) throws LineUnavailableException {
-        this.clip = AudioSystem.getClip();
-        this.level = level;
-        this.running = false;
+    private AudioInputStream soundtrack;
+
+    public SoundEngine() {
+        init();
+    }
+
+    private void init() {
+        try {
+            this.soundtrack = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/soundtrack.wav"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -43,26 +46,23 @@ public class SoundEngine implements Runnable {
                 e.printStackTrace();
             }
         }
-        clip.stop();
     }
 
     public void playSoundtrack() {
         try {
-            if(!this.clip.isRunning()) {
-                this.clip.open(Assets.soundTrack);
-                this.clip.start();
-            }
+            Clip clip = AudioSystem.getClip();
+            clip.open(this.soundtrack);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println(e.getMessage());
         }
     }
 
     @Override
     public void run() {
-        while(running) {
-            playSoundtrack();
-        }
-        stop();
+        playSoundtrack();
     }
 
 }

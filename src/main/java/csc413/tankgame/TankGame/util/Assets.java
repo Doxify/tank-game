@@ -10,6 +10,7 @@ import java.util.Objects;
 public class Assets {
 
     public final static InputStream map1;
+
     public final static AudioInputStream soundTrack;
 
     public final static BufferedImage worldImage;
@@ -33,7 +34,7 @@ public class Assets {
         worldImage = loadBufferedImageFromResources("world.png");
         menuImage = loadBufferedImageFromResources("menu.png");
         map1 = loadStreamFromResources("maps/map1");
-        soundTrack = loadAudioStreamFromResource("sounds/soundtrack.mp3");
+        soundTrack = loadAudioStreamFromResource("sounds/soundtrack.wav");
         tank1Image = loadBufferedImageFromResources("tank1.png");
         tank2Image = loadBufferedImageFromResources("tank2.png");
         bulletImage = loadBufferedImageFromResources("shell.png");

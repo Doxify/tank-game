@@ -4,8 +4,6 @@ import csc413.tankgame.TankGame.entity.movable.Tank;
 import csc413.tankgame.TankGame.graphics.Screen;
 import csc413.tankgame.TankGame.level.Level;
 
-import javax.sound.sampled.LineUnavailableException;
-
 public class Game implements Runnable {
 
     private Thread gameThread;
@@ -23,17 +21,8 @@ public class Game implements Runnable {
         this.level = new Level();
         this.screen = new Screen(level);
         this.running = false;
-        loadSoundEngine();
+        this.soundEngine = new SoundEngine();
         tick = 0;
-    }
-
-    public void loadSoundEngine(){
-        try {
-            this.soundEngine = new SoundEngine(this.level);
-        } catch (LineUnavailableException e) {
-            System.out.println("Could not load soounnd engine.");
-        }
-        this.soundEngine.playSoundtrack();
     }
 
     public Screen getScreen() {
@@ -44,14 +33,14 @@ public class Game implements Runnable {
         return level;
     }
 
-    private void resetGameState() {
-        this.level.getBoosts().clear();
-        for(Tank tank : this.level.getTanks())  {
-            tank.setX(tank.getXSpawn());
-            tank.setY(tank.getYSpawn());
-            tank.setAngle(tank.getAngleSpawn());
-        }
-    }
+//    private void resetGameState() {
+//        this.level.getBoosts().clear();
+//        for(Tank tank : this.level.getTanks())  {
+//            tank.setX(tank.getXSpawn());
+//            tank.setY(tank.getYSpawn());
+//            tank.setAngle(tank.getAngleSpawn());
+//        }
+//    }
 
     public static long getTick() {
         return tick;
