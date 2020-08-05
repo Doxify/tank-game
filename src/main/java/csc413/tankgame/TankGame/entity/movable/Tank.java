@@ -19,6 +19,7 @@ public class Tank extends Movable {
     // Camera variables
     private int cameraX;
     private int cameraY;
+    private int centerX;
 
     // Health Variables
     public final static int MAX_HEALTH = 20;
@@ -154,6 +155,21 @@ public class Tank extends Movable {
         return this.cameraY;
     }
 
+//    public int getCenterX() {
+//        return this.centerX;
+//    }
+
+    public int getFrontOffsetOfTank() {
+        int front = getX();
+
+        if(this.getAngle() < 180) {
+            // NORTH-WEST
+            front = 5 + getImage().getWidth() / 2;
+
+        }
+        return front;
+    }
+
     /**
      * Moves the Tank according to which buttons are pressed.
      */
@@ -203,9 +219,4 @@ public class Tank extends Movable {
         String camera = "[cX;cY]: " + getCameraX() + ";" + getCameraY();
         return tank + " " + camera;
     }
-
-//    @Override
-//    public void playSound() {
-//
-//    }
 }

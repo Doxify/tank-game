@@ -19,23 +19,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Objects;
 
 public class Level {
 
-    private Tank winner;
     private List<Bullet> bullets;
     private List<Wall> walls;
     private List<Boost> boosts;
     private List<Tank> tanks;
+    private List<Entity> garbage;
 
     public Level() {
         resetLevel();
     }
 
     public void resetLevel() {
-        this.winner = null;
         loadLevel();
         initializeTanks();
     }
@@ -78,7 +78,6 @@ public class Level {
             // Getting the winner
             for(Tank t : tanks) {
                 if(t != tank) {
-                    this.winner = t;
                 }
             }
         }
@@ -93,6 +92,7 @@ public class Level {
         this.walls = new ArrayList<>();
         this.tanks = new ArrayList<>();
         this.boosts = new ArrayList<>();
+        this.garbage = new ArrayList<>();
 
         try {
             InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/map1")));
@@ -153,22 +153,24 @@ public class Level {
         }
     }
 
-    /**
-     * Handles the clean up of entities from the Level.
-     */
-    private void remove() {
-        bullets.removeIf(Entity::isRemoved);
-        walls.removeIf(Entity::isRemoved);
-        boosts.removeIf(boost -> boost.isRemoved() && !boost.isActive());
-    }
+//    /**
+//     * Handles the clean up of entities from the Level.
+//     */
+//    public void remove(Ene) {
+//        garbage.forEach(Entity::setRemoved).remove;
+//    }
 
     /**
      * Calls on entities to update their state.
      */
     public void update() {
-        bullets.forEach(Movable::update);
-        tanks.forEach(Tank::update);
-        remove();
+        try {
+            bullets.forEach(Movable::update);
+            tanks.forEach(Tank::update);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        remove();
     }
 
     /**
@@ -178,8 +180,13 @@ public class Level {
     public void render(Graphics buffer) {
         bullets.forEach(movable -> movable.render(buffer));
         tanks.forEach(tank -> tank.render(buffer));
-        walls.forEach(stationary -> stationary.render(buffer));
         boosts.forEach(boost -> boost.render(buffer));
+        walls.forEach(wall -> wall.render(buffer));
+//        walls.forEach(wall -> {
+//            if(!wall.isRemoved()) {
+//                wall.render(buffer);
+//            }
+//        });
     }
 
     /**
