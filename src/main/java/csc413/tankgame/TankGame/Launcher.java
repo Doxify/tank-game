@@ -1,22 +1,23 @@
 package csc413.tankgame.TankGame;
 
-import csc413.tankgame.TankGame.menu.End;
-import csc413.tankgame.TankGame.menu.Start;
+import csc413.tankgame.TankGame.graphics.menu.End;
+import csc413.tankgame.TankGame.graphics.menu.Start;
 import csc413.tankgame.TankGame.util.GameConstants;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 
 public class Launcher {
 
     // Frame and Card Layout
     private static JFrame jFrame;
-    private CardLayout cardLayout;
+    private static CardLayout cardLayout;
 
     // Panels
-    private JPanel mainPanel;
-    private JPanel startPanel;
-    private JPanel endPanel;
+    private static JPanel mainPanel;
+    private static JPanel startPanel;
+    private static JPanel endPanel;
 
     private Game game;
 
@@ -65,7 +66,6 @@ public class Launcher {
             }
             case "end": {
                 jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
-//                game.stop();
                 break;
             }
             case "game": {
@@ -85,6 +85,19 @@ public class Launcher {
      */
     public static JFrame getJFrame() {
         return jFrame;
+    }
+
+    public Game getGame() {
+        return this.game;
+    }
+
+    /**
+     * Closes the launcher.
+     */
+    public void close() {
+        if(jFrame != null) {
+            jFrame.dispatchEvent(new WindowEvent(jFrame, WindowEvent.WINDOW_CLOSING));
+        }
     }
 
     /**

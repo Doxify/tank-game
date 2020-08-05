@@ -34,4 +34,9 @@ public class Shield extends Boost {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Shield";
+    }
 }

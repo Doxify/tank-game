@@ -34,4 +34,9 @@ public class Speed extends Boost {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Speed Increase";
+    }
 }

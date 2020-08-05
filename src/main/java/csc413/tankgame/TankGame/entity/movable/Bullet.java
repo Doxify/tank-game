@@ -29,7 +29,6 @@ public class Bullet extends Movable {
             this.setRemoved();
         } else if(level.entityCollidedWithTank(this)) {
             this.setRemoved();
-            System.out.println("Bullet collided with tank!");
         }
     }
 

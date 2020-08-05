@@ -82,7 +82,7 @@ public abstract class Entity {
 
     public void render(Graphics graphics) {
         if(this.image != null) {
-            if(!this.removed) {
+            if(!isRemoved()) {
                 Graphics2D g2 = (Graphics2D) graphics;
                 g2.drawImage(image, x, y, null);
             }

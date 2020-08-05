@@ -1,15 +1,19 @@
-package csc413.tankgame.TankGame.graphics;
+package csc413.tankgame.TankGame.util;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class Assets {
 
-//    public final static
+    public final static InputStream map1;
+    public final static AudioInputStream soundTrack;
 
     public final static BufferedImage worldImage;
-    public final static BufferedImage titleImage;
+    public final static BufferedImage menuImage;
 
     public final static BufferedImage tank1Image;
     public final static BufferedImage tank2Image;
@@ -27,7 +31,9 @@ public class Assets {
 
     static {
         worldImage = loadBufferedImageFromResources("world.png");
-        titleImage = loadBufferedImageFromResources("Title.bmp");
+        menuImage = loadBufferedImageFromResources("menu.png");
+        map1 = loadStreamFromResources("maps/map1");
+        soundTrack = loadAudioStreamFromResource("sounds/soundtrack.mp3");
         tank1Image = loadBufferedImageFromResources("tank1.png");
         tank2Image = loadBufferedImageFromResources("tank2.png");
         bulletImage = loadBufferedImageFromResources("shell.png");
@@ -49,6 +55,38 @@ public class Assets {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             return ImageIO.read(Objects.requireNonNull(loader.getResource(resourceName)));
+        } catch(Exception ex) {
+            System.out.println("Error occurred while loading " + resourceName + " in Resources.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Loads an input stream from resource folder
+     * @param resourceName tha name of the resource.
+     * @return InputStream representing resource
+     */
+    private static InputStream loadStreamFromResources(String resourceName) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            return Objects.requireNonNull(loader.getResourceAsStream(resourceName));
+        } catch(Exception ex) {
+            System.out.println("Error occurred while loading " + resourceName + " in Resources.");
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Loads an input stream from resource folder
+     * @param resourceName tha name of the resource.
+     * @return InputStream representing resource
+     */
+    private static AudioInputStream loadAudioStreamFromResource(String resourceName) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            return AudioSystem.getAudioInputStream(Objects.requireNonNull(loader.getResourceAsStream(resourceName)));
         } catch(Exception ex) {
             System.out.println("Error occurred while loading " + resourceName + " in Resources.");
             ex.printStackTrace();

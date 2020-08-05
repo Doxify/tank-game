@@ -1,7 +1,9 @@
 package csc413.tankgame.TankGame.graphics;
 
+import csc413.tankgame.TankGame.entity.boost.Boost;
 import csc413.tankgame.TankGame.entity.movable.Tank;
 import csc413.tankgame.TankGame.level.Level;
+import csc413.tankgame.TankGame.util.Assets;
 import csc413.tankgame.TankGame.util.GameConstants;
 
 import javax.swing.*;
@@ -41,7 +43,7 @@ public class Screen extends JPanel {
         g2.drawImage(miniMap, 40, 40, null);
     }
 
-    private BufferedImage renderTankHealthData(Graphics buffer) {
+    private BufferedImage generateTankHealthData() {
         BufferedImage image = new BufferedImage(GameConstants.GAME_WIDTH - GameConstants.SCREEN_WIDTH, 200, BufferedImage.TYPE_INT_ARGB);
         Graphics g = image.getGraphics();
         int yOffset = 30; // Used to evenly space data from Tank1 and Tank2.
@@ -62,7 +64,7 @@ public class Screen extends JPanel {
             g.drawString("HP: " + tank.getHealth(),tank.getImage().getWidth() + 10, (yOffset - 3) + tank.getImage().getHeight() / 2 );
             g.drawString("Lives: ",tank.getImage().getWidth() + 105,(yOffset - 3) + tank.getImage().getHeight() / 2 );
             for(int i = 0; i < Tank.MAX_LIVES; i++) {
-                if(tank.getLives() >= i) {
+                if(tank.getLives() > i) {
                     g.setColor(Color.RED);
                 } else {
                     g.setColor(Color.GRAY);
@@ -84,12 +86,40 @@ public class Screen extends JPanel {
     }
 
 
+    private BufferedImage generateActiveBoosts() {
+        BufferedImage image = new BufferedImage(GameConstants.GAME_WIDTH - GameConstants.SCREEN_WIDTH, 500, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = image.getGraphics();
+
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+        g.setColor(Color.GREEN);
+        g.setFont(new Font("Helvetica", Font.BOLD, 25));
+        g.drawString("Active Boosts", 5, 25);
+        g.setFont(new Font("Helvetica", Font.PLAIN, 18));
+
+        // Looping through tanks and rendering each one.
+        int col = 0;
+        int yOffset = 50; // Used to evenly space data from Tank1 and Tank2.
+        int line = 1;
+        for(Boost boost : level.getBoosts()) {
+            if(boost.isActive()) {
+                g.setColor(Color.WHITE);
+                g.drawString(boost.toString(), 5, yOffset * line);
+                line++;
+            }
+        }
+
+        return image;
+    }
+
     private void renderGameScreen(Graphics2D g2) {
         Graphics gameBuffer = game.createGraphics();
         gameBuffer.setColor(Color.BLACK);
         gameBuffer.fillRect(0, 0, GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT);
 
         // Rendering Level
+        gameBuffer.drawImage(Assets.worldImage, 0, 0, GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT, null);
         level.render(gameBuffer);
 
         // Rendering Split Screen
@@ -104,10 +134,13 @@ public class Screen extends JPanel {
         // Rendering User Interface
         renderMiniMap(uiBuffer);
 
-        BufferedImage tankData = renderTankHealthData(uiBuffer);
+        BufferedImage tankData = generateTankHealthData();
+        BufferedImage boostData = generateActiveBoosts();
 
         g2.drawImage(ui, GameConstants.SCREEN_WIDTH + 10, 0, null);
         g2.drawImage(tankData, GameConstants.SCREEN_WIDTH + 10, 250, null);
+        g2.drawImage(boostData, GameConstants.SCREEN_WIDTH + 10, 400, null);
+
     }
 
     @Override

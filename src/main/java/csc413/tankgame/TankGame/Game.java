@@ -1,13 +1,17 @@
 package csc413.tankgame.TankGame;
 
+import csc413.tankgame.TankGame.entity.movable.Tank;
 import csc413.tankgame.TankGame.graphics.Screen;
 import csc413.tankgame.TankGame.level.Level;
+
+import javax.sound.sampled.LineUnavailableException;
 
 public class Game implements Runnable {
 
     private Thread gameThread;
     private final Launcher launcher;
     private final Level level;
+    private SoundEngine soundEngine;
 
     private final Screen screen;
 
@@ -16,12 +20,20 @@ public class Game implements Runnable {
 
     public Game(Launcher launcher) {
         this.launcher = launcher;
-        this.level = new Level("map1");
+        this.level = new Level();
         this.screen = new Screen(level);
         this.running = false;
-
-        // Initializing static members
+        loadSoundEngine();
         tick = 0;
+    }
+
+    public void loadSoundEngine(){
+        try {
+            this.soundEngine = new SoundEngine(this.level);
+        } catch (LineUnavailableException e) {
+            System.out.println("Could not load soounnd engine.");
+        }
+        this.soundEngine.playSoundtrack();
     }
 
     public Screen getScreen() {
@@ -33,7 +45,12 @@ public class Game implements Runnable {
     }
 
     private void resetGameState() {
-        //TODO: This
+        this.level.getBoosts().clear();
+        for(Tank tank : this.level.getTanks())  {
+            tank.setX(tank.getXSpawn());
+            tank.setY(tank.getYSpawn());
+            tank.setAngle(tank.getAngleSpawn());
+        }
     }
 
     public static long getTick() {
@@ -45,8 +62,9 @@ public class Game implements Runnable {
      */
     public synchronized void start() {
         if(!running) {
-            this.gameThread = new Thread(this, "csc413/tankgame/TankGame");
+            this.gameThread = new Thread(this, "TankGame");
             this.gameThread.start();
+            this.soundEngine.start();
             this.running = true;
         }
     }
@@ -57,6 +75,7 @@ public class Game implements Runnable {
     public synchronized void stop() {
         if(running) {
             this.running = false;
+            this.soundEngine.stop();
             try {
                 this.gameThread.join();
                 this.launcher.setPanel("end");
@@ -74,11 +93,21 @@ public class Game implements Runnable {
         try {
             while(running) {
                 tick++;
-                level.update();
-                screen.repaint();
+                this.level.update();
+                this.screen.repaint();
+
+                // If any tank is removed from the level, game is over.
+                for(Tank tank : level.getTanks()) {
+                    if (tank.isRemoved() && tank.getLives() == 0) {
+                        running = false;
+                        break;
+                    }
+                }
+
                 Thread.sleep(1000 / 144);
             }
             stop();
+            this.launcher.setPanel("end");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

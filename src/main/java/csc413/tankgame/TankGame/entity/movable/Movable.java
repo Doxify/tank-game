@@ -9,18 +9,28 @@ import java.awt.image.BufferedImage;
 
 public abstract class Movable extends Entity {
 
-    private int ROTATION_SPEED;
-    private int SPEED;
-
-    private int vX;
-    private int vY;
-    private float angle;
+    // Respawn Variables
+    private int xSpawn;
+    private int ySpawn;
+    private float angleSpawn;
 
     private int prevX;
     private int prevY;
 
+    // Rotation Variables
+    private int ROTATION_SPEED;
+    private int SPEED;
+
+    // Velocity
+    private int vX;
+    private int vY;
+    private float angle;
+
     public Movable(int x, int y, int vX, int vY, float angle, BufferedImage image) {
         super(x, y, image);
+        this.xSpawn = x;
+        this.ySpawn = y;
+        this.angleSpawn = angle;
         this.vX = vX;
         this.vY = vY;
         this.prevX = x;
@@ -49,7 +59,25 @@ public abstract class Movable extends Entity {
     }
 
     public void setAngle(float angle) {
-        this.angle = angle;
+        if (angle >= 360) {
+            this.angle = 1;
+        } else if (angle<= 0) {
+            this.angle = 360;
+        } else {
+            this.angle = angle;
+        }
+    }
+
+    public int getXSpawn() {
+        return this.xSpawn;
+    }
+
+    public int getYSpawn() {
+        return this.ySpawn;
+    }
+
+    public float getAngleSpawn() {
+        return this.angleSpawn;
     }
 
     public int getPrevX() {
@@ -108,14 +136,14 @@ public abstract class Movable extends Entity {
      * Rotates the Movable to the left at a rate of ROTATION_SPEED.
      */
     void rotateLeft() {
-        this.angle -= ROTATION_SPEED;
+        this.setAngle(this.getAngle() - ROTATION_SPEED);
     }
 
     /**
      * Rotates the Movable to the right at a rate of ROTATION_SPEED.
      */
     void rotateRight() {
-        this.angle += ROTATION_SPEED;
+        this.setAngle(this.getAngle() + ROTATION_SPEED);
     }
 
     /**
@@ -141,14 +169,14 @@ public abstract class Movable extends Entity {
     }
 
     /**
-     * Function that happens when a Movable collides something.
-     */
-    public abstract void handleCollision();
-
-    /**
      * Called every time a game objects state should be updated.
      */
     public abstract void update();
+
+    /**
+     * Function that happens when a Movable collides something.
+     */
+    public abstract void handleCollision();
 
     /**
      * Draws a Movable to the buffer.
@@ -164,8 +192,8 @@ public abstract class Movable extends Entity {
             g2.drawImage(image, rotation, null);
 
             // Visualizing hitboxes.
-            g2.setColor(Color.BLUE);
-            g2.drawRect(getX(), getY(), image.getWidth(), image.getHeight());
+            // g2.setColor(Color.BLUE);
+            // g2.drawRect(getX(), getY(), image.getWidth(), image.getHeight());
         }
     };
 

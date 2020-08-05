@@ -34,4 +34,9 @@ public class BulletSpeed extends Boost {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Increased Bullet Speed";
+    }
 }

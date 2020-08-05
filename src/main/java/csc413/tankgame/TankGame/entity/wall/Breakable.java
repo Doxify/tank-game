@@ -1,6 +1,6 @@
 package csc413.tankgame.TankGame.entity.wall;
 
-import csc413.tankgame.TankGame.graphics.Assets;
+import csc413.tankgame.TankGame.util.Assets;
 
 import java.awt.image.BufferedImage;
 

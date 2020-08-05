@@ -11,8 +11,8 @@ public class GameConstants {
     public static final int WORLD_HEIGHT = 2010;
 
     // Gameplay screen resolution
-    public static final int SCREEN_WIDTH = 1100; // 67 Columns
-    public static final int SCREEN_HEIGHT = 960; // 67 Rows
+    public static final int SCREEN_WIDTH = 1100;
+    public static final int SCREEN_HEIGHT = 768;
 
     // Menu Resolution
     public static final int START_MENU_SCREEN_WIDTH = 500;

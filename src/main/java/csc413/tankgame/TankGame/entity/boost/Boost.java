@@ -3,52 +3,64 @@ package csc413.tankgame.TankGame.entity.boost;
 import csc413.tankgame.TankGame.entity.Entity;
 import csc413.tankgame.TankGame.entity.movable.Tank;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public abstract class Boost extends Entity {
 
-    protected Tank tank;
+    protected Tank tank = null;
     private int durationMilliseconds;
-    private final boolean containsDuration;
+    protected boolean isActive;
 
     public Boost(int x, int y, int durationMilliseconds, BufferedImage image) {
         super(x, y, image);
         this.durationMilliseconds = durationMilliseconds;
-        this.containsDuration = true;
+        this.isActive = false;
     }
 
-    public Boost(int x, int y, BufferedImage image) {
-        super(x, y, image);
-        this.containsDuration = false;
+    public Tank getTank() {
+        return tank;
     }
 
     public void enableBoost(Tank tank) {
-        if(!this.isRemoved()) {
+        if(!this.isRemoved() && !tank.isRemoved()) {
             this.tank = tank;
+            this.isActive = true;
             applyBoost();
 
             // If the boost contains a duration then we
             // should schedule removing the boost.
-            if(containsDuration) {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if(Boost.this.tank != null && !Boost.this.tank.isRemoved()) {
-                            removeBoost();
-                            System.out.print("Removing Boost!");
-                        }
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(Boost.this.tank != null && !Boost.this.tank.isRemoved()) {
+                        isActive = false;
+                        removeBoost();
                     }
-                }, durationMilliseconds);
-            }
-            System.out.println("Enabled boost" + (containsDuration ? " for " + durationMilliseconds + " MS" : "!"));
+                }
+            }, durationMilliseconds);
         }
+    }
+
+    public boolean isActive() {
+        return this.isActive;
     }
 
     public abstract void applyBoost();
 
     public abstract void removeBoost();
+
+    @Override
+    public void render(Graphics g) {
+        if(!this.isRemoved()) {
+            if(this.image != null) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.drawImage(image, getX(), getY(), null);
+            }
+        }
+    }
 
 
 

@@ -1,8 +1,8 @@
 package csc413.tankgame.TankGame.entity.movable;
 
 import csc413.tankgame.TankGame.Game;
+import csc413.tankgame.TankGame.util.Assets;
 import csc413.tankgame.TankGame.util.GameConstants;
-import csc413.tankgame.TankGame.graphics.Assets;
 
 import java.awt.image.BufferedImage;
 
@@ -110,14 +110,12 @@ public class Tank extends Movable {
     }
 
     public void decreaseHealth() {
-        this.health -= HEALTH_DECREASE_MODIFIER;
-        if(this.health <= 0) {
-            lives--;
-            if(lives <= 0) {
-                this.lives = 0;
-                this.health = 0;
-                this.setRemoved();
-            }
+        int health = this.health - HEALTH_DECREASE_MODIFIER;
+        if (health <= 0) {
+            this.lives = this.lives - 1;
+            this.level.respawnTank(this);
+        } else {
+            this.health = health;
         }
     }
 
@@ -188,13 +186,11 @@ public class Tank extends Movable {
     @Override
     public void handleCollision() {
         // Checking if TANK collided with wall or another tank.
-        if(level.entityCollidedWithWall(this) || level.entityCollidedWithTank(this)) {
+        if(this.level.entityCollidedWithWall(this) || this.level.entityCollidedWithTank(this)) {
             this.setX(this.getPrevX());
             this.setY(this.getPrevY());
         }
-
-        // Checking if TANK collided with boost.
-        level.entityCollidedWithBoost(this);
+        this.level.handleTankCollidedWithBoost(this);
     }
 
     /**

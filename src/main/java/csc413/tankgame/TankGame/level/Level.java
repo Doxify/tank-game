@@ -9,7 +9,8 @@ import csc413.tankgame.TankGame.entity.movable.Tank;
 import csc413.tankgame.TankGame.entity.wall.Breakable;
 import csc413.tankgame.TankGame.entity.wall.Unbreakable;
 import csc413.tankgame.TankGame.entity.wall.Wall;
-import csc413.tankgame.TankGame.graphics.Assets;
+import csc413.tankgame.TankGame.util.Assets;
+import csc413.tankgame.TankGame.util.GameConstants;
 import csc413.tankgame.TankGame.util.TankControl;
 
 import java.awt.*;
@@ -23,13 +24,19 @@ import java.util.Objects;
 
 public class Level {
 
-    private final List<Bullet> bullets = new ArrayList<>();
-    private final List<Wall> walls = new ArrayList<>();
-    private final List<Boost> boosts = new ArrayList<>();
-    private final List<Tank> tanks = new ArrayList<>();
+    private Tank winner;
+    private List<Bullet> bullets;
+    private List<Wall> walls;
+    private List<Boost> boosts;
+    private List<Tank> tanks;
 
-    public Level(String levelName) {
-        loadLevel(levelName);
+    public Level() {
+        resetLevel();
+    }
+
+    public void resetLevel() {
+        this.winner = null;
+        loadLevel();
         initializeTanks();
     }
 
@@ -37,8 +44,12 @@ public class Level {
      * Initializes Tanks and adds them to the level.
      */
     private void initializeTanks() {
-        Tank tank1 = new Tank(400, 400, 0, 0, 0, Assets.tank1Image);
-        Tank tank2 = new Tank(400, 475, 0, 0, 0, Assets.tank2Image);
+        Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
+        Tank tank2 = new Tank(GameConstants.WORLD_WIDTH - 330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
+
+//        Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
+//        Tank tank2 = new Tank(400, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
+
         TankControl tank1Control = new TankControl(tank1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
         TankControl tank2Control = new TankControl(tank2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, KeyEvent.VK_SPACE);
 
@@ -52,13 +63,39 @@ public class Level {
     }
 
     /**
+     * Respawns a tank after it loses a life.
+     */
+    public void respawnTank(Tank tank) {
+        if(tank.getLives() > 0) {
+            tank.setX(tank.getXSpawn());
+            tank.setY(tank.getYSpawn());
+            tank.setAngle(tank.getAngleSpawn());
+            tank.resetHealth();
+        } else {
+            // If the tank has no more lives, mark it for removal
+            tank.setRemoved();
+
+            // Getting the winner
+            for(Tank t : tanks) {
+                if(t != tank) {
+                    this.winner = t;
+                }
+            }
+        }
+    }
+
+    /**
      * Loads a map from file into memory.
      * Responsible for loading walls and boosts.
-     * @param levelName to load from /resources/maps/
      */
-    private void loadLevel(String levelName) {
+    private void loadLevel() {
+        this.bullets = new ArrayList<>();
+        this.walls = new ArrayList<>();
+        this.tanks = new ArrayList<>();
+        this.boosts = new ArrayList<>();
+
         try {
-            InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/" + levelName)));
+            InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/map1")));
             BufferedReader mapReader = new BufferedReader(isr);
 
             String row = mapReader.readLine();
@@ -78,28 +115,34 @@ public class Level {
                     switch(mapInfo[curCol]) {
                         // Walls
                         case "2": {
-                            addEntity(new Breakable(x, y, Assets.breakableWallImage));
+                            Breakable br = new Breakable(x, y, Assets.breakableWallImage);
+                            addEntity(br);
                             break;
                         }
                         case "3": case "9": {
-                            addEntity(new Unbreakable(x, y, Assets.unbreakableWallImage));
+                            Unbreakable ubr = new Unbreakable(x, y, Assets.unbreakableWallImage);
+                            addEntity(ubr);
                             break;
                         }
                         // Boosts
                         case "4": {
-                            addEntity(new Health(x, y, Assets.healthBoostImage));
+                            Boost health = new Health(x, y, 10000, Assets.healthBoostImage);
+                            addEntity(health);
                             break;
                         }
                         case "5": {
-                            addEntity(new BulletSpeed(x, y, 5000, Assets.ammoBoostImage));
+                            Boost bulletSpeed = new BulletSpeed(x, y, 10000, Assets.ammoBoostImage);
+                            addEntity(bulletSpeed);
                             break;
                         }
                         case "6": {
-                            addEntity(new Speed(x, y, 5000, Assets.speedBoostImage));
+                            Boost speed = new Speed(x, y, 10000, Assets.speedBoostImage);
+                            addEntity(speed);
                             break;
                         }
                         case "7": {
-                            addEntity(new Shield(x, y, 5000, Assets.shieldBoostImage));
+                            Boost shield = new Shield(x, y, 10000, Assets.shieldBoostImage);
+                            addEntity(shield);
                             break;
                         }
                     }
@@ -116,7 +159,7 @@ public class Level {
     private void remove() {
         bullets.removeIf(Entity::isRemoved);
         walls.removeIf(Entity::isRemoved);
-        boosts.removeIf(Entity::isRemoved);
+        boosts.removeIf(boost -> boost.isRemoved() && !boost.isActive());
     }
 
     /**
@@ -145,30 +188,18 @@ public class Level {
      */
     public void addEntity(Entity entity) {
         entity.init(this);
+
         if (entity instanceof Tank) {
             tanks.add((Tank) entity);
-        } else if(entity instanceof Bullet) {
-            bullets.add((Bullet) entity);
-        } else if(entity instanceof Wall) {
-            walls.add((Wall) entity);
-        } else if(entity instanceof Boost) {
-            boosts.add((Boost) entity);
         }
-    }
-
-    /**
-     * Removes an entity from the level
-     * @param entity to remove
-     */
-    public void removeEntity(Entity entity) {
-        if (entity instanceof Tank) {
-            tanks.remove(entity);
-        } else if(entity instanceof Bullet) {
-            bullets.remove(entity);
-        } else if(entity instanceof Wall) {
-            walls.remove(entity);
-        } else if(entity instanceof Boost) {
-            boosts.remove(entity);
+        if(entity instanceof Bullet) {
+            bullets.add((Bullet) entity);
+        }
+        if(entity instanceof Wall) {
+            walls.add((Wall) entity);
+        }
+        if(entity instanceof Boost) {
+            boosts.add((Boost) entity);
         }
     }
 
@@ -180,24 +211,29 @@ public class Level {
     public boolean entityCollidedWithWall(Entity entity) {
         for(Wall wall : walls) {
             if(wall.hasCollided(entity)) {
-                handleEntityWallCollision(entity, wall);
+                // If a bullet collides with a wall and the wall is breakable
+                // we should decrease the state of the wall.
+                if(entity instanceof Bullet && wall.isBreakable()) {
+                    Breakable breakable = (Breakable) wall;
+                    breakable.decreaseState();
+                }
                 return true;
             }
         }
         return false;
     }
 
-    public boolean entityCollidedWithBoost(Entity entity) {
+    /**
+     * Handles what happens when a Tank collides with a boost
+     * @param tank to check for
+     */
+    public void handleTankCollidedWithBoost(Tank tank) {
         for(Boost boost : boosts) {
-            if(boost.hasCollided(entity)) {
-                if(entity instanceof Tank) {
-                    boost.enableBoost((Tank) entity);
-                    boost.setRemoved();
-                }
-                return true;
+            if(boost.hasCollided(tank)) {
+                boost.enableBoost(tank);
+                boost.setRemoved();
             }
         }
-        return false;
     }
 
     /**
@@ -215,35 +251,33 @@ public class Level {
                 if(entity instanceof Bullet) {
                     if(((Bullet) entity).getOwner() != tank) {
                         tank.decreaseHealth();
-                        System.out.println("Tank1: " + tank.getHealth() + "/" + tank.getMaxHealth());
                         return true;
                     }
                     return false;
                 }
-                // Otherwise return true since a collision has
-                // been detected.
                 return true;
             }
         }
         return false;
     }
 
-    private void handleEntityWallCollision(Entity entity, Wall wall) {
-        // If a bullet collides with a wall and the wall is breakable
-        // we should decrease the state of the wall.
-        if(entity instanceof Bullet && wall.isBreakable()) {
-            Breakable breakable = (Breakable) wall;
-            breakable.decreaseState();
-        }
-    }
-
     public List<Tank> getTanks() {
-        return tanks;
+        return this.tanks;
     }
 
-    public Tank getTank(int index) {
-        return tanks.get(index);
+    public List<Boost> getBoosts() {
+        return this.boosts;
     }
+
+    /**
+     * Returns a tank from the list.
+     * @param index of tank in list
+     * @return tanks[index]
+     */
+    public Tank getTank(int index) {
+        return this.tanks.get(index);
+    }
+
 
 
 
