@@ -249,7 +249,7 @@ public class Level {
                 // check to make sure that the bullet was not fired
                 // by the tank it hit.
                 if(entity instanceof Bullet) {
-                    ((Bullet) entity).playSound();
+//                    ((Bullet) entity).playSound();
                     if(((Bullet) entity).getOwner() != tank) {
                         tank.decreaseHealth();
                         return true;

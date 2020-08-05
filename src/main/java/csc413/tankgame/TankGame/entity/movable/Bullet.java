@@ -1,8 +1,5 @@
 package csc413.tankgame.TankGame.entity.movable;
 
-import csc413.tankgame.TankGame.SoundEngine;
-import csc413.tankgame.TankGame.util.Sound;
-
 import java.awt.image.BufferedImage;
 
 public class Bullet extends Movable {
@@ -44,8 +41,8 @@ public class Bullet extends Movable {
         handleCollision();
     }
 
-    @Override
-    public void playSound() {
-        SoundEngine.addToQueue(new Sound(SoundEngine.bulletExplosion));
-    }
+//    @Override
+//    public void playSound() {
+//        SoundEngine.addToQueue(new Sound(SoundEngine.bulletExplosion));
+//    }
 }
