@@ -9,7 +9,7 @@ public class Game implements Runnable {
     private Thread gameThread;
     private final Launcher launcher;
     private final Level level;
-    private SoundEngine soundEngine;
+    private final SoundEngine soundEngine;
 
     private final Screen screen;
 
@@ -32,15 +32,6 @@ public class Game implements Runnable {
     public Level getLevel() {
         return level;
     }
-
-//    private void resetGameState() {
-//        this.level.getBoosts().clear();
-//        for(Tank tank : this.level.getTanks())  {
-//            tank.setX(tank.getXSpawn());
-//            tank.setY(tank.getYSpawn());
-//            tank.setAngle(tank.getAngleSpawn());
-//        }
-//    }
 
     public static long getTick() {
         return tick;

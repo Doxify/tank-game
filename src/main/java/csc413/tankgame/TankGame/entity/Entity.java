@@ -1,5 +1,6 @@
 package csc413.tankgame.TankGame.entity;
 
+import csc413.tankgame.TankGame.SoundEngine;
 import csc413.tankgame.TankGame.level.Level;
 
 import java.awt.*;

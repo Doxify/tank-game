@@ -3,13 +3,17 @@ package csc413.tankgame.TankGame;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SoundEngine implements Runnable {
 
     private Thread soundThread;
     private boolean running;
 
-    private AudioInputStream soundtrack;
+    public static AudioInputStream soundtrack;
+    public static AudioInputStream bulletExplosion;
+    public static List<AudioInputStream> queue = new ArrayList<>();
 
     public SoundEngine() {
         init();
@@ -17,7 +21,8 @@ public class SoundEngine implements Runnable {
 
     private void init() {
         try {
-            this.soundtrack = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/soundtrack.wav"));
+            soundtrack = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/soundtrack.wav"));
+            bulletExplosion = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/bulletExplosion.wav"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,6 +36,21 @@ public class SoundEngine implements Runnable {
             this.soundThread = new Thread(this, "TankGameSound");
             this.soundThread.start();
             this.running = true;
+        }
+    }
+
+    public static void addToQueue(AudioInputStream audioInputStream) {
+        queue.add(audioInputStream);
+    }
+
+    public static void playSound(AudioInputStream audioInputStream) {
+        try {
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            clip.wait();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -51,7 +71,7 @@ public class SoundEngine implements Runnable {
     public void playSoundtrack() {
         try {
             Clip clip = AudioSystem.getClip();
-            clip.open(this.soundtrack);
+            clip.open(soundtrack);
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
@@ -63,6 +83,12 @@ public class SoundEngine implements Runnable {
     @Override
     public void run() {
         playSoundtrack();
+        while(running) {
+            for (AudioInputStream audioInputStream : queue) {
+                playSound(audioInputStream);
+                queue.remove(audioInputStream);
+            }
+        }
     }
 
 }

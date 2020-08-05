@@ -54,6 +54,6 @@ public class End extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D g2 = (Graphics2D) graphics;
-        g2.drawImage(this.background, 0, 0, null);
+        g2.drawImage(background, 0, 0, null);
     }
 }

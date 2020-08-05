@@ -20,7 +20,7 @@ public class Health extends Boost {
     @Override
     public void removeBoost() {
         this.isActive = false;
-    };
+    }
 
     @Override
     public String toString() {

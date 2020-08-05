@@ -69,7 +69,7 @@ public class Screen extends JPanel {
                 } else {
                     g.setColor(Color.GRAY);
                 }
-                g.drawString("|",tank.getImage().getWidth() + 165 + (i * 10), (yOffset - 3) + tank.getImage().getHeight() / 2 );
+                g.drawString("|",tank.getImage().getWidth() + 150 + (i * 10), (yOffset - 3) + tank.getImage().getHeight() / 2 );
             }
 
             // Healthbar

@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 
 public class TankControl implements KeyListener {
 
-    private Tank tank;
+    private final Tank tank;
     private final int up;
     private final int down;
     private final int right;

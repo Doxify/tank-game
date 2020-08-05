@@ -203,4 +203,9 @@ public class Tank extends Movable {
         String camera = "[cX;cY]: " + getCameraX() + ";" + getCameraY();
         return tank + " " + camera;
     }
+
+    @Override
+    public void playSound() {
+
+    }
 }

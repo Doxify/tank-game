@@ -16,6 +16,6 @@ public abstract class Wall extends Entity {
      */
     public boolean isBreakable() {
         return false;
-    };
+    }
 
 }

@@ -10,9 +10,9 @@ import java.awt.image.BufferedImage;
 public abstract class Movable extends Entity {
 
     // Respawn Variables
-    private int xSpawn;
-    private int ySpawn;
-    private float angleSpawn;
+    private final int xSpawn;
+    private final int ySpawn;
+    private final float angleSpawn;
 
     private int prevX;
     private int prevY;
@@ -195,6 +195,9 @@ public abstract class Movable extends Entity {
             // g2.setColor(Color.BLUE);
             // g2.drawRect(getX(), getY(), image.getWidth(), image.getHeight());
         }
-    };
+    }
+
+    public abstract void playSound();
+
 
 }

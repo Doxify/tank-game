@@ -11,7 +11,7 @@ import java.util.TimerTask;
 public abstract class Boost extends Entity {
 
     protected Tank tank = null;
-    private int durationMilliseconds;
+    private final int durationMilliseconds;
     protected boolean isActive;
 
     public Boost(int x, int y, int durationMilliseconds, BufferedImage image) {

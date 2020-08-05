@@ -1,5 +1,7 @@
 package csc413.tankgame.TankGame.entity.movable;
 
+import csc413.tankgame.TankGame.SoundEngine;
+
 import java.awt.image.BufferedImage;
 
 public class Bullet extends Movable {
@@ -39,5 +41,10 @@ public class Bullet extends Movable {
     public void update() {
         moveForward();
         handleCollision();
-    };
+    }
+
+    @Override
+    public void playSound() {
+        SoundEngine.playSound(SoundEngine.bulletExplosion);
+    }
 }
