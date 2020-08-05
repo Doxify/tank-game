@@ -1,10 +1,11 @@
 package csc413.tankgame.TankGame;
 
+import csc413.tankgame.TankGame.util.Sound;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 public class SoundEngine implements Runnable {
 
@@ -13,7 +14,11 @@ public class SoundEngine implements Runnable {
 
     public static AudioInputStream soundtrack;
     public static AudioInputStream bulletExplosion;
-    public static List<AudioInputStream> queue = new ArrayList<>();
+    public static final Stack<Sound> stack = new Stack<>();
+
+    // Live Sounds
+    private boolean musicEnabled;
+    public static Clip soundtrackClip;
 
     public SoundEngine() {
         init();
@@ -23,6 +28,7 @@ public class SoundEngine implements Runnable {
         try {
             soundtrack = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/soundtrack.wav"));
             bulletExplosion = AudioSystem.getAudioInputStream(this.getClass().getClassLoader().getResourceAsStream("sounds/bulletExplosion.wav"));
+            soundtrackClip = AudioSystem.getClip();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,20 +45,20 @@ public class SoundEngine implements Runnable {
         }
     }
 
-    public static void addToQueue(AudioInputStream audioInputStream) {
-        queue.add(audioInputStream);
+    public static void addToQueue(final Sound sound) {
+        stack.add(sound);
     }
 
-    public static void playSound(AudioInputStream audioInputStream) {
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-            clip.wait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void playSound(final AudioInputStream audioInputStream) {
+//        try {
+//            Clip clip = AudioSystem.getClip();
+//            clip.open(audioInputStream);
+//            clip.start();
+//            clip.wait();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Stops the game thead.
@@ -68,27 +74,57 @@ public class SoundEngine implements Runnable {
         }
     }
 
-    public void playSoundtrack() {
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.open(soundtrack);
-            clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-        }
-    }
-
     @Override
     public void run() {
-        playSoundtrack();
         while(running) {
-            for (AudioInputStream audioInputStream : queue) {
-                playSound(audioInputStream);
-                queue.remove(audioInputStream);
+            if (musicEnabled) {
+                if(!stack.isEmpty()) {
+                    Sound sound = stack.pop();
+                    sound.start();
+                    sound.play();
+                }
             }
         }
+        stop();
+//        if(musicEnabled) playSoundtrack();
+//        while(running) {
+//            if (!stack.isEmpty()) {
+//                AudioInputStream stream = stack.pop();
+//                playSound(stream);
+//            }
+//        }
     }
+
+
+    public void toggleMusic() {
+        this.musicEnabled = !this.musicEnabled;
+        System.out.println("music is now " + this.musicEnabled);
+    }
+
+
+//    public void playSoundtrack() {
+//        if(soundtrackClip != null && !soundtrackClip.isRunning() && this.musicEnabled) {
+//            try {
+//                soundtrackClip.open(soundtrack);
+//                soundtrackClip.start();
+//                soundtrackClip.loop(Clip.LOOP_CONTINUOUSLY);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                System.err.println(e.getMessage());
+//            }
+//        }
+//    }
+
+//    public void stopSoundtrack() {
+//        if(soundtrackClip != null && soundtrackClip.isRunning()){
+//            try {
+//                soundtrackClip.stop();
+//                soundtrackClip.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                System.err.println(e.getMessage());
+//            }
+//        }
+//    }
 
 }

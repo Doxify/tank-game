@@ -9,7 +9,6 @@ public class Game implements Runnable {
     private Thread gameThread;
     private final Launcher launcher;
     private final Level level;
-    private final SoundEngine soundEngine;
 
     private final Screen screen;
 
@@ -21,7 +20,6 @@ public class Game implements Runnable {
         this.level = new Level();
         this.screen = new Screen(level);
         this.running = false;
-        this.soundEngine = new SoundEngine();
         tick = 0;
     }
 
@@ -44,7 +42,6 @@ public class Game implements Runnable {
         if(!running) {
             this.gameThread = new Thread(this, "TankGame");
             this.gameThread.start();
-            this.soundEngine.start();
             this.running = true;
         }
     }
@@ -55,7 +52,6 @@ public class Game implements Runnable {
     public synchronized void stop() {
         if(running) {
             this.running = false;
-            this.soundEngine.stop();
             try {
                 this.gameThread.join();
                 this.launcher.setPanel("end");

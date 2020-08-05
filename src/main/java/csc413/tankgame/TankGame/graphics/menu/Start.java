@@ -14,6 +14,7 @@ public class Start extends JPanel {
     private final Launcher launcher;
     private JButton start;
     private JButton exit;
+    private JButton music;
 
     public Start(Launcher launcher) {
         this.launcher = launcher;
@@ -38,14 +39,23 @@ public class Start extends JPanel {
         // Exit Button
         this.exit = new JButton("Exit");
         this.exit.setFont(new Font("Helvetica", Font.BOLD, 24));
-        this.exit.setBounds(175, (GameConstants.START_MENU_SCREEN_HEIGHT / 2) - 50, 150, 50);
+        this.exit.setBounds(175, (GameConstants.START_MENU_SCREEN_HEIGHT / 2) + 50, 150, 50);
         this.exit.addActionListener((actionEvent -> {
             this.launcher.close();
+        }));
+
+        // Soundtrack Button
+        this.music = new JButton("Music");
+        this.music.setFont(new Font("Arial", Font.BOLD, 24));
+        this.music.setBounds(175, (GameConstants.START_MENU_SCREEN_HEIGHT / 2) + 150, 100, 50);
+        this.music.addActionListener((actionEvent -> {
+            this.launcher.getSoundEngine().toggleMusic();
         }));
 
         // Adding buttons to the Panel
         this.add(exit);
         this.add(start);
+        this.add(music);
     }
 
     @Override

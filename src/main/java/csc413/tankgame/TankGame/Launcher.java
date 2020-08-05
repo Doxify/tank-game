@@ -20,6 +20,7 @@ public class Launcher {
     private static JPanel endPanel;
 
     private Game game;
+    private SoundEngine soundEngine;
 
     public Launcher() {
         jFrame = new JFrame();
@@ -36,8 +37,9 @@ public class Launcher {
         endPanel = new End(this);
         cardLayout = new CardLayout();
 
-        // Instantiating game
+        // Instantiating game and sound engine
         game = new Game(this);
+        soundEngine = new SoundEngine();
 
         // Adding panels into Frame
         mainPanel.setLayout(cardLayout);
@@ -66,11 +68,16 @@ public class Launcher {
             }
             case "end": {
                 jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
+                game.stop();
+                soundEngine.stop();
+                close();
                 break;
             }
             case "game": {
                 jFrame.setSize(GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
                 game.start();
+                soundEngine.start();
+//                soundEngine.playSoundtrack();
                 break;
             }
         }
@@ -90,6 +97,8 @@ public class Launcher {
     public Game getGame() {
         return this.game;
     }
+
+    public SoundEngine getSoundEngine() { return this.soundEngine; }
 
     /**
      * Closes the launcher.
