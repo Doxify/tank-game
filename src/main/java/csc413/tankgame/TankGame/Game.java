@@ -70,7 +70,7 @@ public class Game implements Runnable {
             while(running) {
                 tick++;
                 this.level.update();
-                this.level.remove();
+//                this.level.remove();
                 this.screen.repaint();
 
                 // If any tank is removed from the level, game is over.

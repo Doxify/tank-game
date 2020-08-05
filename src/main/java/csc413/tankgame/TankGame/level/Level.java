@@ -19,9 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Level {
 
@@ -29,7 +29,6 @@ public class Level {
     private List<Wall> walls;
     private List<Boost> boosts;
     private List<Tank> tanks;
-    private List<Entity> garbage;
 
     public Level() {
         resetLevel();
@@ -153,12 +152,18 @@ public class Level {
         }
     }
 
-//    /**
-//     * Handles the clean up of entities from the Level.
-//     */
-//    public void remove(Ene) {
-//        garbage.forEach(Entity::setRemoved).remove;
-//    }
+    /**
+     * Handles the clean up of entities from the Level.
+     */
+    public void remove() {
+//        private List<Bullet> bullets;
+//        private List<Wall> walls;
+//        private List<Boost> boosts;
+//        private List<Tank> tanks;
+        Stream.concat(Stream.concat(bullets.stream(), walls.stream()), boosts.stream())
+            .filter(Entity::isRemoved)
+            .forEach();
+    }
 
     /**
      * Calls on entities to update their state.
