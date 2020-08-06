@@ -30,8 +30,7 @@ public abstract class Boost extends Entity {
             this.isActive = true;
             applyBoost();
 
-            // If the boost contains a duration then we
-            // should schedule removing the boost.
+            // Scheduling the removal of the boost.
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -48,8 +47,14 @@ public abstract class Boost extends Entity {
         return this.isActive;
     }
 
+    /**
+     * Apply the effects of the Boost to the tank.
+     */
     public abstract void applyBoost();
 
+    /**
+     * Undo the effects of the Boost to the tank.
+     */
     public abstract void removeBoost();
 
     @Override

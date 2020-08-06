@@ -7,29 +7,26 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.util.Objects;
 import java.util.Stack;
 
 public class SoundEngine implements Runnable {
 
     private Thread soundThread;
-    private boolean running;
-
+    private boolean running = false;
     private boolean musicEnabled = true;
-
     public static final Stack<Sound> stack = new Stack<>();
 
 
-    public SoundEngine() {
-    }
-
-    public boolean getMusicEnabled() {
-        return this.musicEnabled;
+    /**
+     * Adds a Sound object to the stack for processing.
+     * @param sound object
+     */
+    public static void addToQueue(final Sound sound) {
+        stack.add(sound);
     }
 
     /**
-     * Starts the game thread.
+     * Starts the sound thread.
      */
     public synchronized void start() {
         if(!running) {
@@ -37,10 +34,6 @@ public class SoundEngine implements Runnable {
             this.soundThread.start();
             this.running = true;
         }
-    }
-
-    public static void addToQueue(final Sound sound) {
-        stack.add(sound);
     }
 
     /**
@@ -57,6 +50,10 @@ public class SoundEngine implements Runnable {
         }
     }
 
+    /**
+     * Waits for sounds to be added to the stack
+     * and processes them accordingly.
+     */
     @Override
     public void run() {
         if(musicEnabled) {
@@ -70,12 +67,21 @@ public class SoundEngine implements Runnable {
         }
     }
 
-
+    /**
+     * Toggles the sound engine on and off.
+     */
     public void toggleMusic() {
         this.musicEnabled = !this.musicEnabled;
     }
 
+    public boolean getMusicEnabled() {
+        return this.musicEnabled;
+    }
 
+
+    /**
+     * Plays the game soundtrack.
+     */
     public void playSoundtrack() {
         if(this.musicEnabled) {
             try {

@@ -23,10 +23,6 @@ public class TankControl implements KeyListener {
         this.shoot = shoot;
     }
 
-    /**
-     * DEBUG USE ONLY
-     * @param event the event for the pressed key
-     */
     @Override
     public void keyTyped(KeyEvent event) {
 //        System.out.println(this.tank + " KEY: " + event.getKeyCode());

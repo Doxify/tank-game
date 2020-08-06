@@ -15,6 +15,10 @@ public class Sound {
         this.name = name;
     }
 
+    /**
+     * Returns an AudioInputStream based on the given
+     * name value.
+     */
     public AudioInputStream loadInputStream() {
         try {
             InputStream is = Objects.requireNonNull(Sound.class.getClassLoader().getResourceAsStream(this.name));
@@ -25,6 +29,10 @@ public class Sound {
         return null;
     }
 
+    /**
+     * Play an AudioInputStream on a separate thread.
+     * @param inputStream to play
+     */
     public void play(AudioInputStream inputStream) {
         new Thread(new Runnable() {
             public void run() {

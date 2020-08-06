@@ -19,12 +19,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class Level {
+
+    /**
+     * Main controller of the game world.
+     * Handles all entities, collisions, and clean-up.
+     */
 
     private static List<Bullet> bullets;
     private static List<Wall> walls;
@@ -46,10 +49,6 @@ public class Level {
     private void initializeTanks() {
         Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
         Tank tank2 = new Tank(GameConstants.WORLD_WIDTH - 360, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
-
-//        Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
-//        Tank tank2 = new Tank(400, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
-
         TankControl tank1Control = new TankControl(tank1, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
         TankControl tank2Control = new TankControl(tank2, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A, KeyEvent.VK_SPACE);
 
@@ -74,12 +73,6 @@ public class Level {
         } else {
             // If the tank has no more lives, mark it for removal
             tank.setRemoved();
-
-            // Getting the winner
-            for(Tank t : tanks) {
-                if(t != tank) {
-                }
-            }
         }
     }
 
@@ -88,10 +81,10 @@ public class Level {
      * Responsible for loading walls and boosts.
      */
     private void loadLevel() {
-        this.bullets = new ArrayList<>();
-        this.walls = new ArrayList<>();
-        this.tanks = new ArrayList<>();
-        this.boosts = new ArrayList<>();
+        bullets = new ArrayList<>();
+        walls = new ArrayList<>();
+        tanks = new ArrayList<>();
+        boosts = new ArrayList<>();
 
         try {
             InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/map1")));

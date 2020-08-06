@@ -92,10 +92,6 @@ public class Launcher {
         return jFrame;
     }
 
-    public Game getGame() {
-        return this.game;
-    }
-
     public SoundEngine getSoundEngine() { return this.soundEngine; }
 
     /**

@@ -12,6 +12,10 @@ import java.awt.image.BufferedImage;
 
 public class Screen extends JPanel {
 
+    /**
+     * Screen is responsible for the graphics a player sees.
+     */
+
     private final Level level;
     private final BufferedImage game;
     private final BufferedImage ui;
