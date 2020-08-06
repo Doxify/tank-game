@@ -1,5 +1,5 @@
 # csc413-tankgame
-#### Two player, top down splitscreen tank game created in Java
+### Two player, top down splitscreen tank game created in Java
 
 #### Student Name  : Andrei Georgescu
 #### Student ID    : 920776919
