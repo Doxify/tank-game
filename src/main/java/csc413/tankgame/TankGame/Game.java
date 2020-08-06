@@ -54,7 +54,6 @@ public class Game implements Runnable {
             this.running = false;
             try {
                 this.gameThread.join();
-                this.launcher.setPanel("end");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -70,21 +69,19 @@ public class Game implements Runnable {
             while(running) {
                 tick++;
                 this.level.update();
-//                this.level.remove();
                 this.screen.repaint();
 
                 // If any tank is removed from the level, game is over.
                 for(Tank tank : level.getTanks()) {
                     if (tank.isRemoved() && tank.getLives() == 0) {
-                        running = false;
+                        this.running = false;
+                        this.launcher.setPanel("end");
                         break;
                     }
                 }
-
                 Thread.sleep(1000 / 144);
             }
             stop();
-            this.launcher.setPanel("end");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -15,6 +15,7 @@ public class Assets {
 
     public final static BufferedImage worldImage;
     public final static BufferedImage menuImage;
+    public final static BufferedImage endImage;
 
     public final static BufferedImage tank1Image;
     public final static BufferedImage tank2Image;
@@ -33,6 +34,7 @@ public class Assets {
     static {
         worldImage = loadBufferedImageFromResources("world.png");
         menuImage = loadBufferedImageFromResources("menu.png");
+        endImage = loadBufferedImageFromResources("end.png");
         map1 = loadStreamFromResources("maps/map1");
         soundTrack = loadAudioStreamFromResource("sounds/soundtrack.wav");
         tank1Image = loadBufferedImageFromResources("tank1.png");

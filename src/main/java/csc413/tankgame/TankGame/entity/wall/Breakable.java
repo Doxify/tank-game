@@ -12,20 +12,19 @@ public class Breakable extends Wall {
         super(x, y, image);
     }
 
+    public boolean isBroken() {
+        return this.state >= 0;
+    }
+
     public void decreaseState() {
-        if(state > 0) {
-            state -= 1;
+        if (this.state > 0) {
+            this.state -= 1;
         }
 
         // Change the image of the wall when it's state
         // is at 1. (MAX = 2, MIN = 1)
         if (state == 1) {
             image = Assets.breakableWallImage2;
-        }
-
-        // Mark for removal when the state is 0.
-        if(state == 0 && !this.isRemoved()) {
-            this.setRemoved();
         }
     }
 

@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class Level {
 
@@ -44,7 +43,7 @@ public class Level {
      */
     private void initializeTanks() {
         Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
-        Tank tank2 = new Tank(GameConstants.WORLD_WIDTH - 330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
+        Tank tank2 = new Tank(GameConstants.WORLD_WIDTH - 360, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
 
 //        Tank tank1 = new Tank(330, GameConstants.WORLD_HEIGHT / 2, 0, 0, 0, Assets.tank1Image);
 //        Tank tank2 = new Tank(400, GameConstants.WORLD_HEIGHT / 2, 0, 0, 180, Assets.tank2Image);
@@ -91,7 +90,6 @@ public class Level {
         this.walls = new ArrayList<>();
         this.tanks = new ArrayList<>();
         this.boosts = new ArrayList<>();
-        this.garbage = new ArrayList<>();
 
         try {
             InputStreamReader isr = new InputStreamReader(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("maps/map1")));
@@ -156,13 +154,9 @@ public class Level {
      * Handles the clean up of entities from the Level.
      */
     public void remove() {
-//        private List<Bullet> bullets;
-//        private List<Wall> walls;
-//        private List<Boost> boosts;
-//        private List<Tank> tanks;
-        Stream.concat(Stream.concat(bullets.stream(), walls.stream()), boosts.stream())
-            .filter(Entity::isRemoved)
-            .forEach();
+        bullets.removeIf(Entity::isRemoved);
+        walls.removeIf(e -> e.isBreakable() && e.isRemoved());
+        boosts.removeIf(e -> !e.isActive() && e.isRemoved());
     }
 
     /**
@@ -175,7 +169,7 @@ public class Level {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        remove();
+        remove();
     }
 
     /**
@@ -187,11 +181,6 @@ public class Level {
         tanks.forEach(tank -> tank.render(buffer));
         boosts.forEach(boost -> boost.render(buffer));
         walls.forEach(wall -> wall.render(buffer));
-//        walls.forEach(wall -> {
-//            if(!wall.isRemoved()) {
-//                wall.render(buffer);
-//            }
-//        });
     }
 
     /**
@@ -228,6 +217,7 @@ public class Level {
                 if(entity instanceof Bullet && wall.isBreakable()) {
                     Breakable breakable = (Breakable) wall;
                     breakable.decreaseState();
+                    if(breakable.isBroken()) breakable.setRemoved();
                 }
                 return true;
             }
@@ -261,7 +251,6 @@ public class Level {
                 // check to make sure that the bullet was not fired
                 // by the tank it hit.
                 if(entity instanceof Bullet) {
-//                    ((Bullet) entity).playSound();
                     if(((Bullet) entity).getOwner() != tank) {
                         tank.decreaseHealth();
                         return true;

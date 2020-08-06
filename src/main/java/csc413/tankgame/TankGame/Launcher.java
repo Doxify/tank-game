@@ -69,15 +69,11 @@ public class Launcher {
             case "end": {
                 jFrame.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
                 game.stop();
-                soundEngine.stop();
-                close();
                 break;
             }
             case "game": {
                 jFrame.setSize(GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT);
                 game.start();
-                soundEngine.start();
-//                soundEngine.playSoundtrack();
                 break;
             }
         }
@@ -107,6 +103,8 @@ public class Launcher {
         if(jFrame != null) {
             jFrame.dispatchEvent(new WindowEvent(jFrame, WindowEvent.WINDOW_CLOSING));
         }
+        this.game.stop();
+        this.soundEngine.stop();
     }
 
     /**

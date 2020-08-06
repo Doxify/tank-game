@@ -10,9 +10,8 @@ import java.awt.image.BufferedImage;
 public class End extends JPanel {
 
 
-    private static final BufferedImage background = Assets.menuImage;
+    private static final BufferedImage background = Assets.endImage;
     private final Launcher launcher;
-    private JButton start;
     private JButton exit;
 
     public End(Launcher launcher) {
@@ -27,27 +26,16 @@ public class End extends JPanel {
     }
 
     private void configureButtons() {
-        // Start Button
-        this.start = new JButton("Play Again");
-        this.start.setFont(new Font("Courier New", Font.BOLD, 24));
-        this.start.setBounds(150, 300, 150, 50);
-        this.start.addActionListener((actionEvent -> {
-            this.launcher.getGame().getLevel().resetLevel();
-            this.launcher.setPanel("game");
-        }));
-
         // Exit Button
         this.exit = new JButton("Exit");
         this.exit.setSize(new Dimension(200, 100));
         this.exit.setFont(new Font("Courier New", Font.BOLD, 24));
         this.exit.setBounds(150, 400, 150, 50);
         this.exit.addActionListener((actionEvent -> {
-            this.launcher.getGame().stop();
             this.launcher.close();
         }));
 
         // Adding buttons to the Panel
-        this.add(start);
         this.add(exit);
     }
 

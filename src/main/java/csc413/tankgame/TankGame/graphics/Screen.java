@@ -10,8 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.sql.Time;
+import java.util.*;
+import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class Screen extends JPanel {
 
@@ -97,19 +98,23 @@ public class Screen extends JPanel {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
 
-        g.setColor(Color.GREEN);
+        g.setColor(Color.WHITE);
         g.setFont(new Font("Helvetica", Font.BOLD, 25));
-        g.drawString("Active Boosts", 5, 25);
+        g.drawString("Active Boosts", 5, 22);
         g.setFont(new Font("Helvetica", Font.PLAIN, 18));
 
+        // Sorting boosts
+        List<Boost> boosts = level.getBoosts();
+//        Collections.reverse(boosts);
+
         // Looping through tanks and rendering each one.
-        int col = 0;
-        int yOffset = 50; // Used to evenly space data from Tank1 and Tank2.
+        int yOffset = 20; // Used to evenly space data from Tank1 and Tank2.
         int line = 1;
-        for(Boost boost : level.getBoosts()) {
+        for(Boost boost : boosts) {
             if(boost.isActive()) {
-                g.setColor(Color.WHITE);
-                g.drawString(boost.toString(), 5, yOffset * line);
+                int tank = (boost.getTank() == level.getTank(0) ? 1 : 2);
+                g.setColor(tank == 1 ? Color.RED : Color.BLUE);
+                g.drawString("T" + tank + ": " + boost.toString(), 5, 30 + yOffset * line);
                 line++;
             }
         }
