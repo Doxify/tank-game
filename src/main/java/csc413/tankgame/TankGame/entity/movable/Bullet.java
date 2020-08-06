@@ -1,5 +1,9 @@
 package csc413.tankgame.TankGame.entity.movable;
 
+import csc413.tankgame.TankGame.SoundEngine;
+import csc413.tankgame.TankGame.util.Assets;
+import csc413.tankgame.TankGame.util.Sound;
+
 import java.awt.image.BufferedImage;
 
 public class Bullet extends Movable {
@@ -24,11 +28,18 @@ public class Bullet extends Movable {
 
     @Override
     public void handleCollision() {
+        boolean playSound = false;
         // Once a bullet collides with a wall, remove it.
         if(level.entityCollidedWithWall(this)) {
             this.setRemoved();
+            playSound = true;
         } else if(level.entityCollidedWithTank(this)) {
             this.setRemoved();
+            playSound = true;
+        }
+
+        if(playSound) {
+            this.playSound();
         }
     }
 
@@ -41,8 +52,8 @@ public class Bullet extends Movable {
         handleCollision();
     }
 
-//    @Override
-//    public void playSound() {
-//        SoundEngine.addToQueue(new Sound(SoundEngine.bulletExplosion));
-//    }
+    @Override
+    public void playSound() {
+        SoundEngine.addToQueue(new Sound(Assets.bulletExplosion));
+    }
 }

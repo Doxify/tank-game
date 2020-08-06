@@ -1,8 +1,6 @@
 package csc413.tankgame.TankGame.util;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Objects;
@@ -10,8 +8,9 @@ import java.util.Objects;
 public class Assets {
 
     public final static InputStream map1;
+    public final static InputStream soundTrack;
+    public final static String bulletExplosion = "sounds/bulletExplosion.wav";
 
-    public final static AudioInputStream soundTrack;
 
     public final static BufferedImage worldImage;
     public final static BufferedImage menuImage;
@@ -86,10 +85,10 @@ public class Assets {
      * @param resourceName tha name of the resource.
      * @return InputStream representing resource
      */
-    private static AudioInputStream loadAudioStreamFromResource(String resourceName) {
+    private static InputStream loadAudioStreamFromResource(String resourceName) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            return AudioSystem.getAudioInputStream(Objects.requireNonNull(loader.getResourceAsStream(resourceName)));
+            return Objects.requireNonNull(loader.getResourceAsStream(resourceName));
         } catch(Exception ex) {
             System.out.println("Error occurred while loading " + resourceName + " in Resources.");
             ex.printStackTrace();

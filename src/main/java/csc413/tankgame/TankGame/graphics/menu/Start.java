@@ -36,11 +36,12 @@ public class Start extends JPanel {
             this.launcher.setPanel("game");
         }));
         // Soundtrack Button
-        this.music = new JButton("Music");
+        this.music = new JButton("Music " + (this.launcher.getSoundEngine().getMusicEnabled() ? "Off" : "On"));
         this.music.setFont(new Font("Arial", Font.BOLD, 24));
         this.music.setBounds(175, (GameConstants.START_MENU_SCREEN_HEIGHT / 2) + 75, 150, 50);
         this.music.addActionListener((actionEvent -> {
             this.launcher.getSoundEngine().toggleMusic();
+            this.music.setText("Music " + (this.launcher.getSoundEngine().getMusicEnabled() ? "Off" : "On"));
         }));
         // Exit Button
         this.exit = new JButton("Exit");

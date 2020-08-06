@@ -3,72 +3,39 @@ package csc413.tankgame.TankGame.util;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.util.Objects;
 
-public class Sound implements Runnable {
+public class Sound {
 
-    private boolean running;
-    private Thread thread;
-    private boolean play;
-    private AudioInputStream inputStream;
-    private Clip clip;
+    private final String name;
 
-    public Sound(AudioInputStream inputStream) {
-        this.running = false;
-        this.inputStream = inputStream;
-        this.start();
+    public Sound(String name) {
+        this.name = name;
     }
 
-    public void start() {
-        if(!this.running) {
-            this.thread = new Thread(this);
-            this.running = true;
-            this.thread.start();
-        }
-    }
-
-    @Override
-    public void run() {
-        while(this.running) {
-            if (this.clip != null) {
-                if(this.play && this.inputStream != null){
-                    this.play = false;
-                    this.play();
-                }
-            } else {
-                this.getAudioClip();
-            }
-        }
-    }
-
-    public void play() {
-        if(this.clip != null) {
-            this.clip.start();
-            this.clip.stop();
-        } else {
-            this.getAudioClip();
-        }
-
-        this.play = true;
-        this.inputStream = null;
-    }
-
-    public void stop() {
-        if(this.clip != null) {
-            this.clip.stop();
-            this.clip.close();
-        }
-        this.clip = null;
-        this.play = false;
-        this.inputStream = null;
-    }
-
-
-    private void getAudioClip() {
+    public AudioInputStream loadInputStream() {
         try {
-            this.clip = AudioSystem.getClip();
+            InputStream is = Objects.requireNonNull(Sound.class.getClassLoader().getResourceAsStream(this.name));
+            return AudioSystem.getAudioInputStream(new BufferedInputStream(is));
         } catch (Exception e) {
             e.printStackTrace();
-
         }
+        return null;
+    }
+
+    public void play(AudioInputStream inputStream) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(inputStream);
+                    clip.start();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }).start();
     }
 }

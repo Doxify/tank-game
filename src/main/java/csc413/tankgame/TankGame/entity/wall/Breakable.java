@@ -13,7 +13,7 @@ public class Breakable extends Wall {
     }
 
     public boolean isBroken() {
-        return this.state >= 0;
+        return this.state <= 0;
     }
 
     public void decreaseState() {

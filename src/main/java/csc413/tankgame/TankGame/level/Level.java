@@ -19,15 +19,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Level {
 
-    private List<Bullet> bullets;
-    private List<Wall> walls;
-    private List<Boost> boosts;
-    private List<Tank> tanks;
+    private static List<Bullet> bullets;
+    private static List<Wall> walls;
+    private static List<Boost> boosts;
+    private static List<Tank> tanks;
 
     public Level() {
         resetLevel();
@@ -153,9 +155,9 @@ public class Level {
     /**
      * Handles the clean up of entities from the Level.
      */
-    public void remove() {
+    public static void remove() {
         bullets.removeIf(Entity::isRemoved);
-        walls.removeIf(e -> e.isBreakable() && e.isRemoved());
+        walls.removeIf(e -> (e.isBreakable() && e.isRemoved()));
         boosts.removeIf(e -> !e.isActive() && e.isRemoved());
     }
 
@@ -164,12 +166,12 @@ public class Level {
      */
     public void update() {
         try {
+            remove();
             bullets.forEach(Movable::update);
             tanks.forEach(Tank::update);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        remove();
     }
 
     /**
@@ -180,7 +182,7 @@ public class Level {
         bullets.forEach(movable -> movable.render(buffer));
         tanks.forEach(tank -> tank.render(buffer));
         boosts.forEach(boost -> boost.render(buffer));
-        walls.forEach(wall -> wall.render(buffer));
+        walls.forEach(walls -> walls.render(buffer));
     }
 
     /**

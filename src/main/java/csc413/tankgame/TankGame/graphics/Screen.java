@@ -9,17 +9,12 @@ import csc413.tankgame.TankGame.util.GameConstants;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.sql.Time;
-import java.util.*;
-import java.util.List;
-import java.util.Timer;
 
 public class Screen extends JPanel {
 
     private final Level level;
     private final BufferedImage game;
     private final BufferedImage ui;
-//    private final static Stack<>
 
     public Screen(Level level) {
         this.level = level;
@@ -103,14 +98,10 @@ public class Screen extends JPanel {
         g.drawString("Active Boosts", 5, 22);
         g.setFont(new Font("Helvetica", Font.PLAIN, 18));
 
-        // Sorting boosts
-        List<Boost> boosts = level.getBoosts();
-//        Collections.reverse(boosts);
-
         // Looping through tanks and rendering each one.
         int yOffset = 20; // Used to evenly space data from Tank1 and Tank2.
         int line = 1;
-        for(Boost boost : boosts) {
+        for(Boost boost : level.getBoosts()) {
             if(boost.isActive()) {
                 int tank = (boost.getTank() == level.getTank(0) ? 1 : 2);
                 g.setColor(tank == 1 ? Color.RED : Color.BLUE);
@@ -152,35 +143,12 @@ public class Screen extends JPanel {
 
     }
 
-//    /**
-//     * Allows you to display text on the screen in the color
-//     * of your choice.
-//     * @param text to display
-//     * @param color of the text
-//     */
-//    public void drawOnScreen(Graphics2D g2, int timeMS, String text, Color color) {
-//
-//
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//            if(g2 != null) {
-//
-//            }
-//            }
-//        }, timeMS);
-//    }
-//
-//    public void renderTextOnScreen() {
-//
-//    }
 
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D g2 = (Graphics2D) graphics;
         renderGameScreen(g2);
         renderUserInterface(g2);
-//        drawOnScreen(g2, "Test", Color.RED);
     }
 
 }
