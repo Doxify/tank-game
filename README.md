@@ -1,11 +1,12 @@
 # csc413-tankgame
+#### Two player, top down splitscreen tank game created in Java
 
-## Student Name  : Andrei Georgescu
-## Student ID    : 920776919
+#### Student Name  : Andrei Georgescu
+#### Student ID    : 920776919
 
-
-## src folder is to be used for source code only.
-
-## resources folder is to be used to store the resources for your project only. This includes images, sounds, map text files, etc.
-
-## jar folder is used to store the built jar of your term-project. NO SOURCE CODE SHOULD BE IN THIS FOLDER. DOING SO WILL CAUSE POINTS TO BE DEDUCTED
+## Screenshots
+<p align="center">
+  <img src="https://i.imgur.com/B6Ruz6U.png" width="25%" height="25%">
+  <img src="https://i.imgur.com/ulNsbSi.png" width="50%" height="50%">
+  <img src="https://i.imgur.com/guWzVDg.png" width="50%" height="50%">
+</p>
